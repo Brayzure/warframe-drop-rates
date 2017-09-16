@@ -17,7 +17,7 @@ Used to search the database for any items that match the search term provided.
 ##### Response
 An object, where every property is a single Drop resource.  
 Ex. (`term=Forma`)  
-```json
+```js
 {
 	"Forma": Drop,
 	"Forma Blueprint": Drop
@@ -37,7 +37,7 @@ relics | RelicItem[]? | An array of RelicItem resources. `null` if no relics dro
 enemies | EnemyItem[]? | An array of EnemyItem resources. `null` if no enemies drop the item.
 
 Example:
-```json
+```js
 {
     missions: [
         MissionItem,
@@ -69,7 +69,7 @@ item_chance | Float | The chance the item drops, assuming a drop occurs
 chance | Float | The chance the item drops each time the enemy is killed
 
 Example:
-```json
+```js
 {
     "source": "Corrupted Warden",
     "item_type": "blueprint",
@@ -95,7 +95,7 @@ chance | Float | The chance the item will drop
 vaulted | Boolean | Whether or not the relic is vaulted
 
 Example:
-```json
+```js
 {
     "tier": "Axi",
     "name" : "B2",
@@ -122,7 +122,7 @@ item | String | The item that drops from the mission
 chance | Float | The chance the item drops from the mission
 
 Example:
-```json
+```js
 {
     "node": "Orokin Derelict Defense",
     "sector": "Derelict",
@@ -139,7 +139,7 @@ Useful figures used throughout the API.
 
 ### Relic Drop Chances
 The chance an item drops from a relic, based on its rarity and the relic's refinement level.
-```json
+```js
 {
     "Common": {
         "Intact": 0.253,
