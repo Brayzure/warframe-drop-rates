@@ -1,0 +1,29 @@
+{
+  "name": "warframe-drop-rates",
+  "version": "0.0.1",
+  "description": "Placeholder",
+  "main": "index.js",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "ejs": "^2.5.7",
+    "express": "^4.15.4",
+    "http": "^0.0.0",
+    "https": "^1.0.0",
+    "pg": "^7.3.0",
+    "request": "^2.81.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Brayzure/warframe-drop-rates.git"
+  },
+  "author": "Tyler Ricketts (Brayzure)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Brayzure/warframe-drop-rates/issues"
+  },
+  "homepage": "https://github.com/Brayzure/warframe-drop-rates#readme"
+}
