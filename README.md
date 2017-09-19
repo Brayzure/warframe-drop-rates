@@ -57,14 +57,14 @@ Example:
 ---
 
 ### EnemyItem
-Represents the data related a an ingame enemy.
+Represents the data related to a drop from an ingame enemy.
 
 Property | Value Type | Description
 --- | --- | ---
 source | String | The name of the enemy
 item_type | String | The type of item, `"mod"` or `"blueprint"`
-blueprint_chance | Float | The chance that the enemy drops a blueprint
-mod_chance | Float | The chance that the enemy drops a mod
+blueprint_chance | Float? | The chance that the enemy drops a blueprint. `null` if dropped item is a mod.
+mod_chance | Float? | The chance that the enemy drops a mod. `null` if dropped item is a blueprint.
 item_chance | Float | The chance the item drops, assuming a drop occurs
 chance | Float | The chance the item drops each time the enemy is killed
 
@@ -74,7 +74,6 @@ Example:
     "source": "Corrupted Warden",
     "item_type": "blueprint",
     "blueprint_chance": 0.01,
-    "mod_chance": 0.03,
     "item_chance": 1,
     "chance": 0.01
 }
@@ -83,7 +82,7 @@ Example:
 ---
 
 ### RelicItem
-Represents the drop chance for a single item in a relic.
+Represents the data related to a drop from a relic.
 
 Property | Value Type | Description
 --- | --- | ---
@@ -109,7 +108,7 @@ Example:
 ---
 
 ### MissionItem
-Represents the data related to an inagem mission.
+Represents the data related to an ingame mission.
 
 Property | Value Type | Description
 --- | --- | ---
