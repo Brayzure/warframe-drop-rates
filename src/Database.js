@@ -1,0 +1,291 @@
+const postgres = require('pg');
+
+const auth = require('../auth/auth.json');
+
+var pg = new postgres.Client({
+    user: auth.pg_user,
+    password: auth.pg_password,
+    database: auth.pg_db
+});
+
+pg.connect((err) => {
+    if(err) {
+        throw err;
+    }
+});
+
+const functions = {
+    /*
+    * Properties
+    * reward.source - where the item drops from (node or enemy name)
+    * reward.reward_type - one of single, rotation, enemy_mod, enemy_blueprint, sortie 
+    * reward.rotation - rotation, if applicable
+    * reward.chance - how likely the item is to be rewarded, assuming a reward is furnished
+    * reward.item - name of the item
+    */
+    addReward: async function(reward) {
+        try {
+            let result = await pg.query({
+                text: "INSERT INTO rewards VALUES($1, $2, $3, $4, $5) RETURNING *",
+                values: [reward.source, reward.reward_type, reward.rotation, reward.chance, reward.item]
+            });
+
+            return result;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    /*
+    * Properties
+    * relic.tier - one of axi, neo, meso, lith
+    * relic.name - name of the relic (A2, for example)
+    * relic.rating - one of intact, exceptional, flawless, radiant
+    * relic.item - the dropped item
+    * relic.chance - chance item is dropped
+    * relic.vaulted - if the relic is vaulted
+    */
+    addRelic: async function(relic) {
+        try {
+            let result = await pg.query({
+                text: "INSERT INTO relics VALUES($1, $2, $3, $4, $5) RETURNING *",
+                values: [relic.tier, relic.name, relic.rating, relic.item, relic.chance]
+            });
+
+            return result;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    /*
+    * Properties
+    * enemy.name - enemy name
+    * enemy.mod_drop_chance - chances the enemy will drop a mod
+    * enemy.blueprint_drop_chance - chances the enemy will drop a blueprint
+    * Note: The two above are chosen independently of each other
+    */
+    addEnemy: async function(enemy) {
+        try {
+            let result;
+            if(enemy.mod_drop_chance) {
+                result = await pg.query({
+                    text: "INSERT INTO enemies VALUES($1, $2, $3) ON CONFLICT (name) DO UPDATE SET mod_drop_chance = $2 RETURNING *",
+                    values: [enemy.name, enemy.mod_drop_chance, 0]
+                });
+            }
+            if(enemy.blueprint_drop_chance) {
+                result = await pg.query({
+                    text: "INSERT INTO enemies VALUES($1, $2, $3) ON CONFLICT (name) DO UPDATE SET blueprint_drop_chance = $3 RETURNING *",
+                    values: [enemy.name, 0, enemy.blueprint_drop_chance]
+                });
+            }
+
+            return result;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    /*
+    * Properties
+    * mission.node - name of the mission node
+    * mission.sector - planet or other region the node is located in
+    * mission.mission_type - type of mission
+    * mission.event - boolean, whether the mission was part of an event
+    */
+    addMission: async function(mission) {
+        try {
+            let result = await pg.query({
+                text: "INSERT INTO missions VALUES($1, $2, $3, $4) RETURNING *",
+                values: [mission.node, mission.sector, mission.mission_type, mission.event]
+            });
+
+            return result;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    findItem: async function(item, exact=false) {
+        try {
+            if(item.length < 1) {
+                return {};
+            }
+
+            let result;
+            if(exact) {
+                result = await pg.query({
+                    text: "SELECT * FROM rewards WHERE item ILIKE $1 ORDER BY item, chance DESC",
+                    values: [item]
+                });
+            }
+            else {
+                result = await pg.query({
+                    text: "SELECT * FROM rewards WHERE item ILIKE '%' || $1 || '%' ORDER BY item, chance DESC",
+                    values: [item]
+                });
+            }
+            
+
+            let data = {};
+            let name, prop, d;
+            for(entry of result.rows) {
+                name = entry.item;
+                if(!data[name]) {
+                    data[name] = {};
+                }
+                prop = "";
+                switch(entry.type) {
+                    case "enemy_mod":
+                        prop = 'mod_drop_chance';
+                    case "enemy_blueprint":
+                        if(!prop) {
+                            prop = 'blueprint_drop_chance'
+                        }
+                        let enemy = await functions.findEnemy(entry.source);
+                        if(!data[name].enemies) {
+                            data[name].enemies = [];
+                        }
+                        let enemyItem = {
+                            source: enemy.name,
+                            item: name,
+                            item_type: prop == "mod_drop_chance" ? "mod" : "blueprint",
+                            item_chance: entry.chance,
+                            chance: entry.chance * enemy[prop]
+                        }
+                        enemyItem[prop] = enemy[prop];
+                        data[name].enemies.push(enemyItem);
+                        break;
+                    case "single":
+                    case "rotation":
+                        let mission = await functions.findMission(entry.source);
+                        if(!data[name].missions) {
+                            data[name].missions = [];
+                        }
+                        let d;
+                        if(mission) {
+                            d = {
+                                node: mission.node,
+                                sector: mission.sector,
+                                mission_type: mission.mission_type,
+                                rotation: !!(entry.type == "rotation"),
+                                event_exclusive: mission.event,
+                                item: name,
+                                chance: entry.chance
+                            }
+                        }
+                        else {
+                            d = {
+                                node: entry.source,
+                                item: name,
+                                chance: entry.chance
+                            }
+                        }
+                        
+                        if(entry.type == "rotation") {
+                            d.rotation = entry.rotation;
+                        }
+                        data[name].missions.push(d);
+                        break;
+                    case "sortie":
+                        if(!data[name].sortie) {
+                            data[name].sortie = {
+                                chance: entry.chance
+                            }
+                        }
+                        break;
+                    default:
+                        throw new Error(`Unrecognized reward entry type: ${entry.type}`);
+                        break;
+                }
+            }
+
+            if(exact) {
+                result = await pg.query({
+                    text: "SELECT tier, name, rating, item, chance, NOT EXISTS(SELECT * FROM rewards WHERE item = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item ILIKE $1 ORDER BY vaulted, item, tier, name, chance DESC",
+                    values: [item]
+                });
+            }
+            else {
+                result = await pg.query({
+                    text: "SELECT tier, name, rating, item, chance, NOT EXISTS(SELECT * FROM rewards WHERE item = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item ILIKE '%' || $1 || '%' ORDER BY vaulted, item, tier, name, chance DESC",
+                    values: [item]
+                });
+            }
+
+            for(relic of result.rows) {
+                if(!data[relic.item]) {
+                    data[relic.item] = {
+                        relics: []
+                    }
+                }
+
+                data[relic.item].relics.push(relic);
+            }
+
+            // TODO: Sort by overall chance
+            return data;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    findEnemy: async function(enemy) {
+        try {
+            let result = await pg.query({
+                text: "SELECT * FROM enemies WHERE name = $1",
+                values: [enemy]
+            });
+
+            if(!result.rows.length) {
+                return null;
+            }
+            else {
+                return result.rows[0];
+            }
+        }
+        catch (err) {
+            return null;
+        }
+    },
+    findMission: async function(mission) {
+        try {
+            let result = await pg.query({
+                text: "SELECT * FROM missions WHERE node = $1",
+                values: [mission]
+            });
+
+            if(!result.rows.length) {
+                return null;
+            }
+            else {
+                return result.rows[0];
+            }
+        }
+        catch (err) {
+            return null;
+        }
+    },
+    nuke: async function() {
+        try {
+            await pg.query("TRUNCATE rewards, missions, relics, enemies");
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    addLog: async function(ip, endpoint, term="") {
+        try {
+            await pg.query({
+                text: "INSERT INTO requests VALUES($1, $2, $3, $4)",
+                values: [ip, endpoint, term, new Date()]
+            });
+        }
+        catch (err) {
+            throw err;
+        }
+    }
+}
+
+module.exports = functions;

@@ -19,6 +19,7 @@ pg.connect(async (err) => {
         await pg.query(rewards);
         await pg.query(enemies);
         await pg.query(missions);
+        await pg.query(requests);
         console.log("Tables created.");
     }
     catch (err) {
@@ -56,4 +57,11 @@ node text PRIMARY KEY,
 sector text,
 mission_type text,
 event bool
+);`
+
+const requests = `CREATE TABLE requests (
+ip text,
+endpoint text,
+term text,
+time timestamp
 );`

@@ -19,8 +19,8 @@ An object, where every property is a single Drop resource.
 Ex. (`term=Forma`)  
 ```js
 {
-	"Forma": Drop,
-	"Forma Blueprint": Drop
+    "Forma": Drop,
+    "Forma Blueprint": Drop
 }
 ```
 

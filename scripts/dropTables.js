@@ -18,6 +18,7 @@ pg.connect(async (err) => {
         await pg.query("DROP TABLE rewards");
         await pg.query("DROP TABLE enemies");
         await pg.query("DROP TABLE missions");
+        await pg.query("DROP TABLE requests");
         console.log("Tables successfully deleted.");
     }
     catch (err) {
