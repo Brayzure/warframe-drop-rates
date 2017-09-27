@@ -1,8 +1,8 @@
-# Warframe Drop Table API
-Future home for the third-party drop table RESTful API.
+# wfdrops
+Home for the third-party drop table RESTful API.
 
 ### Base URL
-`https://warframe.lessis.moe/api` (Not currently in service)  
+`https://wfdrops.com/api` 
 
 ### API Version: v1
 
@@ -23,6 +23,18 @@ Ex. (`term=Forma`)
     "Forma Blueprint": Drop
 }
 ```
+
+#### GET `/relic/{tier}/{name}`
+Retrieve the data related to a single Relic.
+
+##### Response
+A Relic resource.
+
+#### GET `/mission/{node}`
+Retrieve the data related to a single Mission.
+
+##### Response
+A Mission resource.
 
 ## Resources
 The API makes use a several different resource types, described below.
