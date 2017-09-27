@@ -133,7 +133,11 @@ const functions = {
             for(entry of result.rows) {
                 name = entry.item;
                 if(!data[name]) {
-                    data[name] = {};
+                    data[name] = {
+                        enemies: [],
+                        missions: [],
+                        relics: []
+                    };
                 }
                 prop = "";
                 switch(entry.type) {
@@ -144,9 +148,6 @@ const functions = {
                             prop = 'blueprint_drop_chance'
                         }
                         let enemy = await functions.findEnemy(entry.source);
-                        if(!data[name].enemies) {
-                            data[name].enemies = [];
-                        }
                         let enemyItem = {
                             source: enemy.name,
                             item: name,
@@ -160,9 +161,6 @@ const functions = {
                     case "single":
                     case "rotation":
                         let mission = await functions.findMission(entry.source);
-                        if(!data[name].missions) {
-                            data[name].missions = [];
-                        }
                         let d;
                         if(mission) {
                             d = {
@@ -217,6 +215,8 @@ const functions = {
             for(relic of result.rows) {
                 if(!data[relic.item]) {
                     data[relic.item] = {
+                        enemies: [],
+                        mission: [],
                         relics: []
                     }
                 }
@@ -267,6 +267,115 @@ const functions = {
             return null;
         }
     },
+    getRelic: async function(tier, name) {
+        try {
+            let result;
+            tier = capitalize(tier);
+            name = capitalize(name);
+            let relicName = `${tier} ${name} Relic`;
+            console.log(relicName);
+            result = await pg.query({
+                text: "SELECT tier, name, rating, item, chance, NOT EXISTS(SELECT * FROM rewards WHERE item = $3) AS v FROM relics WHERE tier = $1 AND name = $2",
+                values: [tier, name, relicName]
+            });
+            if(!result.rows.length) {
+                return false;
+            }
+            let data = {};
+            data.vaulted = false;
+            for(item of result.rows) {
+                if(!data[item.rating]) {
+                    data[item.rating] = [];
+                }
+                if(item.v) {
+                    data.vaulted = true;
+                }
+                let r = {
+                    item: item.item,
+                    chance: item.chance
+                }
+                data[item.rating].push(r);
+            }
+
+            data.Intact.sort((a, b) => { return b.chance - a.chance});
+            data.Exceptional.sort((a, b) => { return b.chance - a.chance});
+            data.Flawless.sort((a, b) => { return b.chance - a.chance});
+            data.Radiant.sort((a, b) => { return b.chance - a.chance});
+
+            let sources = await pg.query({
+                text: "SELECT * FROM rewards LEFT OUTER JOIN missions ON (rewards.source = missions.node) WHERE item = $1",
+                values: [relicName]
+            });
+
+            data.sources = [];
+
+            for(m of sources.rows) {
+                let mission = {};
+                if(m.node) {
+                    let s = `(${m.mission_type}`;
+                    if(m.rotation) {
+                        s += ` Rotation ${m.rotation}`;
+                    }
+                    s += `) ${m.sector}/${m.node}`;
+                    mission = {
+                        source: s,
+                        node: m.node,
+                        planet: m.sector,
+                        mission_type: m.mission_type,
+                        rotation: m.rotation ? m.rotation : "",
+                        item: relicName,
+                        chance: m.chance,
+                        event_exclusive: m.event
+                    }
+                }
+                else {
+                    mission = {
+                        source: m.source,
+                        rotation: m.rotation ? m.rotation : "",
+                        item: relicName,
+                        chance: m.chance
+                    }
+                }
+                data.sources.push(mission);
+            }
+
+            console.log(sources.rows);
+
+            return data;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    getMissionTable: async function(source) {
+        try {
+            source = capitalize(source);
+            let missionData = await functions.findMission(source);
+            let missionDrops = await pg.query({
+                text: "SELECT * FROM rewards WHERE source = $1",
+                values: [source]
+            });
+
+            if(!missionDrops.rows.length) {
+                return false;
+            }
+
+            let mission = {};
+            if(missionData) {
+                mission = missionData;
+            }
+            mission.drops = [];
+            for(drop of missionDrops.rows) {
+                mission.node = drop.source;
+                mission.drops.push(drop);
+            }
+
+            return mission;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
     nuke: async function() {
         try {
             await pg.query("TRUNCATE rewards, missions, relics, enemies");
@@ -286,6 +395,10 @@ const functions = {
             throw err;
         }
     }
+}
+
+function capitalize(word) {
+    return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
 module.exports = functions;

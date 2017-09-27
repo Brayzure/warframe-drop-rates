@@ -32,9 +32,9 @@ Represents the drop chances for a single item.
 
 Property | Value Type | Description
 --- | --- | ---
-missions | MissionItem[]? | An array of MissionItem resources. `null` if no missions drop the item.
-relics | RelicItem[]? | An array of RelicItem resources. `null` if no relics drop the item.
-enemies | EnemyItem[]? | An array of EnemyItem resources. `null` if no enemies drop the item.
+missions | MissionItem[] | An array of MissionItem resources.
+relics | RelicItem[] | An array of RelicItem resources.
+enemies | EnemyItem[] | An array of EnemyItem resources.
 
 Example:
 ```js

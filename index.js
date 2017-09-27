@@ -1,5 +1,3 @@
-const certLoc = '/etc/letsencrypt/live/lessis.moe/';
-
 const fs = require('fs');
 const http = require('http');
 const https = require('https');
@@ -8,16 +6,6 @@ const ejs = require('ejs');
 const Database = require('./src/Database.js');
 const RateLimiter = require('./src/RateLimiter.js');
 
-let secure = true;
-try {
-    var options = {
-        key: fs.readFileSync(certLoc + 'privkey.pem'),
-        cert: fs.readFileSync(certLoc + 'fullchain.pem')
-    }
-}
-catch (err) {
-    secure = false;
-}
 
 
 const app = Express();
@@ -29,9 +17,6 @@ let api = require('./routes/api.js');
 app.use(logRequests);
 app.use(allowCrossDomain);
 app.use('/api', checkRateLimit);
-if(secure) {
-    app.use(ensureSecure);
-}
 
 // API handling
 //app.use('/api', rejectInsecure);
@@ -41,28 +26,13 @@ app.use('/api', api);
 //app.use('/', web);
 
 app.get('*', (req, res) => {
-    res.send("AHHHHH");
+    res.send("Super Fancy 404");
 });
-
-if(secure) {
-    let httpsServer = https.createServer(options, app);
-    httpsServer.listen(4000, () => {
-        console.log("Secure web/API server now ready to receive requests");
-    });
-}
 
 let httpServer = http.createServer(app);
-httpServer.listen(3000, () => {
+httpServer.listen(3000, 'localhost', () => {
     console.log("Insecure web server now ready to receive requests");
 });
-
-function rejectInsecure(req, res, next) {
-    if(!req.secure) {
-        res.sendStatus(403);
-    }
-
-    return next();
-}
 
 function logRequests(req, res, next) {
     let term = "";
@@ -79,15 +49,6 @@ function allowCrossDomain(req, res, next) {
     res.header('Access-Control-Allow-Methods', 'GET');
 
     next();
-}
-
-function ensureSecure(req, res, next) {
-    if(req.secure) {
-        return next();
-    }
-
-    res.header("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
-    res.redirect('https://' + req.hostname + req.url);
 }
 
 function checkRateLimit(req, res, next) {
