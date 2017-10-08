@@ -14,6 +14,8 @@ const ratelimit = new RateLimiter(10, 10);
 let api = require('./routes/api.js');
 //let web = require('./routes/web.js');
 
+app.set('trust proxy', true);
+
 app.use(logRequests);
 app.use(allowCrossDomain);
 app.use('/api', checkRateLimit);
