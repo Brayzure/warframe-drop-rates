@@ -1,12 +1,7 @@
-const fs = require('fs');
 const http = require('http');
-const https = require('https');
 const Express = require('express');
-const ejs = require('ejs');
 const Database = require('./src/Database.js');
 const RateLimiter = require('./src/RateLimiter.js');
-
-
 
 const app = Express();
 const ratelimit = new RateLimiter(10, 10);
@@ -54,21 +49,19 @@ function allowCrossDomain(req, res, next) {
 }
 
 function checkRateLimit(req, res, next) {
-    console.log("New request, checking ratelimits...");
-    if(ratelimit.consume(req.ip)) {
-        let details = ratelimit.getDetails(req.ip);
-        let time = Math.ceil((details.reset - new Date().getTime()) / 1000);
-        res.header("X-RateLimit-Limit", details.maxTokens);
-        res.header("X-RateLimit-Remaining", details.tokens);
-        res.header("X-RateLimit-Reset", time);
+    let consumed = ratelimit.consume(req.ip);
+
+    let details = ratelimit.getDetails(req.ip);
+    let time = Math.ceil((details.reset - new Date().getTime()) / 1000);
+
+    res.header("X-RateLimit-Limit", details.maxTokens);
+    res.header("X-RateLimit-Remaining", details.tokens);
+    res.header("X-RateLimit-Reset", time);
+    
+    if(consumed) {
         next();
     }
     else {
-        let details = ratelimit.getDetails(req.ip);
-        let time = Math.ceil((details.reset - new Date().getTime()) / 1000);
-        res.header("X-RateLimit-Limit", details.maxTokens);
-        res.header("X-RateLimit-Remaining", details.tokens);
-        res.header("X-RateLimit-Reset", time);
         res.sendStatus(429);
     }
 }

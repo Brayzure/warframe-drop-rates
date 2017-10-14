@@ -28,10 +28,11 @@ async function parseAll() {
 		let keyDrops = parseKeys(data[2]);
 		let noSetLocationDrops = parseNoSetLocation(data[3]);
 		let sortieDrops = parseSortie(data[4]);
-		let modDrops = parseMods(data[5]);
-		let enemyMods = parseEnemyMods(data[6]);
-		let blueprintDrops = parseBlueprints(data[7]);
-		let enemyBlueprints = parseEnemyBlueprints(data[8]);
+		let cetusDrops = parseCetusBounties(data[5]);
+		let modDrops = parseMods(data[6]);
+		let enemyMods = parseEnemyMods(data[7]);
+		let blueprintDrops = parseBlueprints(data[8]);
+		let enemyBlueprints = parseEnemyBlueprints(data[9]);
 
 		/*
 		missions
@@ -160,6 +161,39 @@ async function parseAll() {
 			}
 		}
 		console.log(`Pushed ${count} sortie drops to the rewards table!`);
+
+		console.log("Pushing Cetus bounty rewards to the database...");
+		count = 0;
+		for(bounty in cetusDrops) {
+			if(cetusDrops.hasOwnProperty(bounty)) {
+				let b = {
+					node: bounty,
+					sector: cetusDrops[bounty].sector,
+					mission_type: cetusDrops[bounty].mission_type,
+					event: false
+				}
+				await Database.addMission(b);
+				
+				for(drop of cetusDrops[bounty].drops) {
+					let reward = {
+						source: bounty,
+						reward_type: cetusDrops[bounty].dropType,
+						rotation: cetusDrops[bounty].dropType === "rotation" ? drop.rotation : "",
+						chance: drop.chance,
+						item: drop.item
+					}
+					try {
+						count++;
+
+						await Database.addReward(reward);
+					}
+					catch (err) {
+						console.log(err);
+					}
+				}
+			}
+		}
+		console.log(`Pushed ${count} Cetus bounty rewards to the rewards table!`);
 		count = 0;
 		console.log("Pushing enemy mod drops to the database...");
 
@@ -531,6 +565,84 @@ function parseSortie(table) {
 	}
 
 	return keys;
+}
+
+function parseCetusBounties(table) {
+	let tables = [];
+	let current = [];
+	for(tag of table) {
+		if(tag.children[0].attribs.class && tag.children[0].attribs.class.includes('blank-row')) {
+			//console.log(tag.children[0]);
+			tables.push(current);
+			current = [];
+		}
+		else {
+			let data = [];
+			let t = tag.children;
+			for(d of t) {
+				data.push(d.children[0].data);
+			}
+			current.push(data);
+		}
+	}
+	//console.log(tables);
+	let data = {};
+	for(t of tables) {
+		let sector, node, type;
+		/*
+		let split = t[0][0].split('/');
+		sector = split[0].trim();
+
+		let i1 = split[1].lastIndexOf('(');
+		let i2 = split[1].lastIndexOf(')');
+		type = split[1].substring(i1+1, i2).trim();
+		split[1] = split[1].substring(0, i1) + split[1].substring(i2+1);
+		
+		node = split[1].replace(/ +/g, ' ').trim();
+		*/
+
+		node = t[0][0];
+		sector = "Cetus";
+		type = "Bounty";
+
+		data[node] = {
+			sector: sector,
+			mission_type: type,
+			dropType: "",
+			drops: []
+		}
+
+		t.splice(0, 1);
+		let rotation;
+		
+		for(row of t) {
+			if(row[0].startsWith("Rotation ")) {
+				data[node].dropType = "rotation";
+				rotation = row[0].slice(9);
+			}
+			else if(data[node].dropType == "rotation") {
+				let drop = {
+					rotation: rotation,
+					item: row[0],
+					chance: parseChance(row[1])
+				}
+
+				data[node].drops.push(drop);
+			}
+			else {
+				data[node].dropType = "single";
+				let drop = {
+					item: row[0],
+					chance: parseChance(row[1])
+				}
+				data[node].drops.push(drop);
+			}
+		}
+		if(!data[node].dropType) {
+			console.log(type, t);
+		}
+	}
+	return data;
 }
 
 function parseMods(table) {

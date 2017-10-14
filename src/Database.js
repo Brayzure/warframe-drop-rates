@@ -107,6 +107,9 @@ const functions = {
             throw err;
         }
     },
+    /*
+    * TODO: Change return value to array of Drop resources
+    */
     findItem: async function(item, exact=false) {
         try {
             if(item.length < 1) {
