@@ -219,7 +219,7 @@ const functions = {
                 if(!data[relic.item]) {
                     data[relic.item] = {
                         enemies: [],
-                        mission: [],
+                        missions: [],
                         relics: []
                     }
                 }

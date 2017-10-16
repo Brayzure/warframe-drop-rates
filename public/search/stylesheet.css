@@ -1,0 +1,34 @@
+div.listing {
+    border: 1px solid black;
+    margin: 12px;
+    position: relative;
+}
+
+div.expando.closed p::before {
+    content: "[+] ";
+}
+
+div.expando.open p::before {
+    content: "[-] ";
+}
+
+div.expando-target {
+    border-top: 1px solid black;
+    display: none;
+}
+
+div.expando p {
+    padding: 16px;
+}
+
+p {
+    margin: 0px;
+}
+
+p.sortie {
+    margin: 12px;
+}
+
+table.drop-table {
+    width: 100%;
+}
