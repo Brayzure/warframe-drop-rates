@@ -15,22 +15,22 @@ Used to search the database for any items that match the search term provided.
 - term - The search term
 
 ##### Response
-An object, where every property is a single Drop resource.  
+An array of Drop resources.  
 Ex. (`term=Forma`)  
 ```js
-{
-    "Forma": Drop,
-    "Forma Blueprint": Drop
-}
+[
+    Drop,
+    Drop
+]
 ```
 
-#### GET `/relic/{tier}/{name}`
+#### GET `/relics/{tier}/{name}`
 Retrieve the data related to a single Relic.
 
 ##### Response
 A Relic resource.
 
-#### GET `/mission/{node}`
+#### GET `/missions/{node}`
 Retrieve the data related to a single Mission.
 
 ##### Response
@@ -44,13 +44,15 @@ Represents the drop chances for a single item.
 
 Property | Value Type | Description
 --- | --- | ---
+item_name | String | The name of the item that is dropped by the given resources.
+enemies | EnemyItem[] | An array of EnemyItem resources.
 missions | MissionItem[] | An array of MissionItem resources.
 relics | RelicItem[] | An array of RelicItem resources.
-enemies | EnemyItem[] | An array of EnemyItem resources.
 
 Example:
 ```js
 {
+    enemies: [],
     missions: [
         MissionItem,
         MissionItem,
@@ -101,7 +103,7 @@ Property | Value Type | Description
 tier | String | The tier of the relic
 name | String | The name of the relic
 rating | String | The refined status of the relic
-item | String | The item that drops from the relic
+item_name | String | The item that drops from the relic
 chance | Float | The chance the item will drop
 vaulted | Boolean | Whether or not the relic is vaulted
 
@@ -129,7 +131,7 @@ sector | String? | The region where the node is located. Will be `null` if one d
 mission_type | String? | The mission type. Will be `null` if one does not exist
 rotation | String/Boolean? | The rotation the item may drop on. Will be `false` if mission type does not support rotations. Will be `null` if not applicable.
 event_exclusive | Boolean? | Whether the node is part of an event? Not sure. Will be `null` if not applicable
-item | String | The item that drops from the mission
+item_name | String | The item that drops from the mission
 chance | Float | The chance the item drops from the mission
 
 Example:

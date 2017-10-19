@@ -117,19 +117,10 @@ const functions = {
             }
 
             let result;
-            if(exact) {
-                result = await pg.query({
-                    text: "SELECT * FROM rewards WHERE item ILIKE $1 ORDER BY item, chance DESC",
-                    values: [item]
-                });
-            }
-            else {
-                result = await pg.query({
-                    text: "SELECT * FROM rewards WHERE item ILIKE '%' || $1 || '%' ORDER BY item, chance DESC",
-                    values: [item]
-                });
-            }
-            
+            result = await pg.query({
+                text: `SELECT * FROM rewards WHERE item ILIKE ${exact?"$1":"'%' || $1 || '%'"} ORDER BY item, chance DESC`,
+                values: [item]
+            });
 
             let data = {};
             let name, prop, d;
@@ -137,6 +128,7 @@ const functions = {
                 name = entry.item;
                 if(!data[name]) {
                     data[name] = {
+                        item_name: name,
                         enemies: [],
                         missions: [],
                         relics: []
@@ -153,7 +145,7 @@ const functions = {
                         let enemy = await functions.findEnemy(entry.source);
                         let enemyItem = {
                             source: enemy.name,
-                            item: name,
+                            item_name: name,
                             item_type: prop == "mod_drop_chance" ? "mod" : "blueprint",
                             item_chance: entry.chance,
                             chance: entry.chance * enemy[prop]
@@ -172,14 +164,14 @@ const functions = {
                                 mission_type: mission.mission_type,
                                 rotation: !!(entry.type == "rotation"),
                                 event_exclusive: mission.event,
-                                item: name,
+                                item_name: name,
                                 chance: entry.chance
                             }
                         }
                         else {
                             d = {
                                 node: entry.source,
-                                item: name,
+                                item_name: name,
                                 chance: entry.chance
                             }
                         }
@@ -227,8 +219,17 @@ const functions = {
                 data[relic.item].relics.push(relic);
             }
 
+            let finalData = [];
+
+            for(drop in data) {
+                if(data.hasOwnProperty(drop)) {
+                    let dropData = data[drop];
+                    finalData.push(dropData);
+                }
+            }
+
             // TODO: Sort by overall chance
-            return data;
+            return finalData;
         }
         catch (err) {
             throw err;
@@ -294,7 +295,7 @@ const functions = {
                     data.vaulted = true;
                 }
                 let r = {
-                    item: item.item,
+                    item_name: item.item,
                     chance: item.chance
                 }
                 data[item.rating].push(r);
@@ -326,7 +327,7 @@ const functions = {
                         planet: m.sector,
                         mission_type: m.mission_type,
                         rotation: m.rotation ? m.rotation : "",
-                        item: relicName,
+                        item_name: relicName,
                         chance: m.chance,
                         event_exclusive: m.event
                     }
@@ -335,7 +336,7 @@ const functions = {
                     mission = {
                         source: m.source,
                         rotation: m.rotation ? m.rotation : "",
-                        item: relicName,
+                        item_name: relicName,
                         chance: m.chance
                     }
                 }

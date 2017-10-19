@@ -27,7 +27,7 @@ router.get('/search', async (req, res) => {
     
 });
 
-router.get('/relic/:tier/:name', async (req, res) => {
+router.get('/relics/:tier/:name', async (req, res) => {
     try {
         let result = {};
         result = await Database.getRelic(req.params.tier, req.params.name);
@@ -49,7 +49,7 @@ router.get('/relic/:tier/:name', async (req, res) => {
     
 });
 
-router.get('/mission/:node', async (req, res) => {
+router.get('/missions/:node', async (req, res) => {
     try {
         let result = {};
         result = await Database.getMissionTable(req.params.node);

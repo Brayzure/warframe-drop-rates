@@ -38,47 +38,44 @@
                     body.removeChild(body.firstChild);
                 }
 
-                for(item in results) {
-                    if(results.hasOwnProperty(item)) {
-                        console.log(item);
-                        var drops = results[item];
+                for(drops of results) {
+                    console.log(drops.item_name);
 
-                        // Create div containing a single Item listing
-                        var itemDiv = createExpando(item);
+                    // Create div containing a single Item listing
+                    var itemDiv = createExpando(drops.item_name);
 
-                        var listing, table;
+                    var listing, table;
 
-                        if(drops.enemies.length) {
-                            listing = createItemSourceElement("Enemies");
-                            listing.className = "listing";
+                    if(drops.enemies.length) {
+                        listing = createItemSourceElement("Enemies");
+                        listing.className = "listing";
 
-                            table = createDropTable(["Enemy", "Chance"]);
-                            populateDropTable(table, drops.enemies, "enemies");
-                            listing.children[1].appendChild(table);
+                        table = createDropTable(["Enemy", "Chance"]);
+                        populateDropTable(table, drops.enemies, "enemies");
+                        listing.children[1].appendChild(table);
 
-                            itemDiv.children[1].appendChild(listing);
-                        }
-
-                        if(drops.missions.length) {
-                            listing = createItemSourceElement("Missions");
-
-                            table = createDropTable(["Mission", "Chance"]);
-                            populateDropTable(table, drops.missions, "missions");
-                            listing.children[1].appendChild(table);
-
-                            listing.className = "listing";
-                            itemDiv.children[1].appendChild(listing);
-                        }
-
-                        if(drops.relics.length) {
-                            listing = createItemSourceElement("Relics");
-                            listing.className = "listing";
-                            itemDiv.children[1].appendChild(listing);
-                        }
-
-                        // Add Item listing to page
-                        body.appendChild(itemDiv);
+                        itemDiv.children[1].appendChild(listing);
                     }
+
+                    if(drops.missions.length) {
+                        listing = createItemSourceElement("Missions");
+
+                        table = createDropTable(["Mission", "Chance"]);
+                        populateDropTable(table, drops.missions, "missions");
+                        listing.children[1].appendChild(table);
+
+                        listing.className = "listing";
+                        itemDiv.children[1].appendChild(listing);
+                    }
+
+                    if(drops.relics.length) {
+                        listing = createItemSourceElement("Relics");
+                        listing.className = "listing";
+                        itemDiv.children[1].appendChild(listing);
+                    }
+
+                    // Add Item listing to page
+                    body.appendChild(itemDiv);
                 }
             }
         }
