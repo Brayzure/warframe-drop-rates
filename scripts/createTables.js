@@ -34,7 +34,7 @@ const relics = `CREATE TABLE relics (
 tier text,
 name text,
 rating text,
-item text,
+item_name text,
 chance real
 );`;
 
@@ -43,7 +43,7 @@ source text,
 type text,
 rotation text,
 chance real,
-item text
+item_name text
 );`
 
 const enemies = `CREATE TABLE enemies (

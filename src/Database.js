@@ -118,14 +118,14 @@ const functions = {
 
             let result;
             result = await pg.query({
-                text: `SELECT * FROM rewards WHERE item ILIKE ${exact?"$1":"'%' || $1 || '%'"} ORDER BY item, chance DESC`,
+                text: `SELECT * FROM rewards WHERE item_name ILIKE ${exact?"$1":"'%' || $1 || '%'"} ORDER BY item_name, chance DESC`,
                 values: [item]
             });
 
             let data = {};
             let name, prop, d;
             for(entry of result.rows) {
-                name = entry.item;
+                name = entry.item_name;
                 if(!data[name]) {
                     data[name] = {
                         item_name: name,
@@ -196,27 +196,27 @@ const functions = {
 
             if(exact) {
                 result = await pg.query({
-                    text: "SELECT tier, name, rating, item, chance, NOT EXISTS(SELECT * FROM rewards WHERE item = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item ILIKE $1 ORDER BY vaulted, item, tier, name, chance DESC",
+                    text: "SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item_name ILIKE $1 ORDER BY vaulted, item_name, tier, name, chance DESC",
                     values: [item]
                 });
             }
             else {
                 result = await pg.query({
-                    text: "SELECT tier, name, rating, item, chance, NOT EXISTS(SELECT * FROM rewards WHERE item = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item ILIKE '%' || $1 || '%' ORDER BY vaulted, item, tier, name, chance DESC",
+                    text: "SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item_name ILIKE '%' || $1 || '%' ORDER BY vaulted, item_name, tier, name, chance DESC",
                     values: [item]
                 });
             }
 
             for(relic of result.rows) {
-                if(!data[relic.item]) {
-                    data[relic.item] = {
+                if(!data[relic.item_name]) {
+                    data[relic.item_name] = {
                         enemies: [],
                         missions: [],
                         relics: []
                     }
                 }
 
-                data[relic.item].relics.push(relic);
+                data[relic.item_name].relics.push(relic);
             }
 
             let finalData = [];
@@ -279,7 +279,7 @@ const functions = {
             let relicName = `${tier} ${name} Relic`;
             console.log(relicName);
             result = await pg.query({
-                text: "SELECT tier, name, rating, item, chance, NOT EXISTS(SELECT * FROM rewards WHERE item = $3) AS v FROM relics WHERE tier = $1 AND name = $2",
+                text: "SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = $3) AS v FROM relics WHERE tier = $1 AND name = $2",
                 values: [tier, name, relicName]
             });
             if(!result.rows.length) {
@@ -295,7 +295,7 @@ const functions = {
                     data.vaulted = true;
                 }
                 let r = {
-                    item_name: item.item,
+                    item_name: item.item_name,
                     chance: item.chance
                 }
                 data[item.rating].push(r);
@@ -307,7 +307,7 @@ const functions = {
             data.Radiant.sort((a, b) => { return b.chance - a.chance});
 
             let sources = await pg.query({
-                text: "SELECT * FROM rewards LEFT OUTER JOIN missions ON (rewards.source = missions.node) WHERE item = $1",
+                text: "SELECT * FROM rewards LEFT OUTER JOIN missions ON (rewards.source = missions.node) WHERE item_name = $1",
                 values: [relicName]
             });
 
