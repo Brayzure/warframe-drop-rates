@@ -12,11 +12,15 @@
                 $(this).next().stop(true, true);
                 $(this).next().slideDown();
             }
-            else {
+            else if($(this).hasClass("open")) {
                 $(this).removeClass("open");
                 $(this).addClass("closed");
                 $(this).next().stop(true, true);
                 $(this).next().slideUp();
+            }
+            else {
+                $(this).next().stop(true, true);
+                $(this).next().slideToggle();
             }
         }
         isDragging = false;
