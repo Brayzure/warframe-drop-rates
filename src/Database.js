@@ -210,6 +210,7 @@ const functions = {
             for(relic of result.rows) {
                 if(!data[relic.item_name]) {
                     data[relic.item_name] = {
+                        item_name: relic.item_name,
                         enemies: [],
                         missions: [],
                         relics: []
