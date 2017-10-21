@@ -7,9 +7,11 @@ const app = Express();
 const ratelimit = new RateLimiter(10, 10);
 
 let api = require('./routes/api.js');
-//let web = require('./routes/web.js');
+let web = require('./routes/web.js');
 
 app.set('trust proxy', true);
+
+app.use(Express.static("public"))
 
 app.use(logRequests);
 app.use(allowCrossDomain);
@@ -20,7 +22,7 @@ app.use('/api', checkRateLimit);
 app.use('/api', api);
 
 // Web handling
-//app.use('/', web);
+app.use('/', web);
 
 app.get('*', (req, res) => {
     res.send("Super Fancy 404");

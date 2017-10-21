@@ -6,12 +6,24 @@
     <link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
 <body>
-    <div>
-        <input type="text" name="search" id="search" placeholder="Search term here..." autofocus>
+    <div class="content">
+        <h2>WFDrops - Warframe Drop Table Search Tool</h2>
+        <p>WFDrops is a third-party tool used to provide easier access to Warframe's official
+            drop rates. All data is obtained regularly from the official drop tables
+            <a href="https://n8k6e2y6.ssl.hwcdn.net/repos/hnfvc0o3jnfvc873njb03enrf56.html">here</a>.
+            A ratelimited RESTful API is also available, for developer use.
+        </p>
+        <p>This page is still in active development. Anything here could change at any time.
+            Check the <a href="https://github.com/Brayzure/warframe-drop-rates">GitHub repo</a> every
+            now and then for more information.
+        </p>
+
+        <input type="text" name="search" id="search" placeholder="Search term here..." autofocus autocomplete="off">
     </div>
+    
     <h3>Items</h3>
     <div id="root"></div>
-    <script type="text/javascript" src="search.js"></script>
-    <script type="text/javascript" src="slide.js"></script>
+    <script type="text/javascript" src="/search/search.js"></script>
+    <script type="text/javascript" src="/search/slide.js"></script>
 </body>
 </html>

@@ -70,6 +70,11 @@
 
                     if(drops.relics.length) {
                         listing = createItemSourceElement("Relics");
+
+                        table = createDropTable(["Relic", "Chance"]);
+                        populateDropTable(table, drops.relics, "relics");
+                        listing.children[1].appendChild(table);
+
                         listing.className = "listing";
                         itemDiv.children[1].appendChild(listing);
                     }
@@ -192,6 +197,16 @@
 
                 entries[1] = toPercent(mission.chance, 2);
 
+                var row = createDropEntry(entries);
+                table.appendChild(row);
+            }
+        }
+        else if(type == "relics") {
+            for(var i=0; i<drops.length; i++) {
+                var relic = drops[i];
+                var chance = toPercent(relic.chance, 2);
+                var relicName = relic.tier + " " + relic.name + " (" + relic.rating + ")";
+                var entries = [relicName, chance];
                 var row = createDropEntry(entries);
                 table.appendChild(row);
             }
