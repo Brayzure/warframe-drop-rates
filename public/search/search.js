@@ -52,6 +52,7 @@
                         listing.className = "listing";
 
                         table = createDropTable(["Enemy", "Chance"]);
+                        table.className = table.className + " enemies";
                         populateDropTable(table, drops.enemies, "enemies");
                         listing.children[1].appendChild(table);
 
@@ -62,6 +63,7 @@
                         listing = createItemSourceElement("Missions");
 
                         table = createDropTable(["Mission", "Chance"]);
+                        table.className = table.className + " missions";
                         populateDropTable(table, drops.missions, "missions");
                         listing.children[1].appendChild(table);
 
@@ -72,7 +74,8 @@
                     if(drops.relics.length) {
                         listing = createItemSourceElement("Relics");
 
-                        table = createDropTable(["Relic", "Chance"]);
+                        table = createDropTable(["i", "Relic", "Chance"]);
+                        table.className = table.className + " relics";
                         populateDropTable(table, drops.relics, "relics");
                         listing.children[1].appendChild(table);
 
@@ -190,13 +193,13 @@
                     missionName = mission.sector + " / " + missionName;
                 }
                 if(missionDetails) {
-                    entries[0] = missionDetails + " " + missionName;
+                    entries.push(missionDetails + " " + missionName);
                 }
                 else {
-                    entries[0] = missionName;
+                    entries.push(missionName);
                 }
 
-                entries[1] = toPercent(mission.chance, 2);
+                entries.push(toPercent(mission.chance, 2));
 
                 var row = createDropEntry(entries);
                 table.appendChild(row);
@@ -207,8 +210,11 @@
                 var relic = drops[i];
                 var chance = toPercent(relic.chance, 2);
                 var relicName = relic.tier + " " + relic.name + " (" + relic.rating + ")";
-                var entries = [relicName, chance];
+                var entries = [(relic.vaulted?"Vaulted":""), relicName, chance];
                 var row = createDropEntry(entries);
+                if(relic.vaulted) {
+                    row.className = "vaulted";
+                }
                 table.appendChild(row);
             }
         }

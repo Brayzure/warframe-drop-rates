@@ -1,5 +1,17 @@
 html {
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #222;
+    color: #ddd;
+}
+
+a {
+    color: #9bc1ff;
+    text-decoration: underline #9bc1ff;
+}
+
+a:visited {
+    color: #eb9bff;
+    text-decoration: underline #eb9bff;
 }
 
 div.content {
@@ -20,10 +32,24 @@ div.listing {
     border: 1px solid #000;
     margin: 12px;
     position: relative;
+    background-color: #444;
 }
 
 div.root-listing {
-    box-shadow: 5px 5px 3px #888;
+    box-shadow: 5px 5px 3px #000;
+}
+
+div.expando {
+    background-color: #666;
+}
+
+div.expando p {
+    padding: 16px;
+}
+
+div.expando-target {
+    border-top: 1px solid #000;
+    display: none;
 }
 
 div.expando.closed p::before {
@@ -32,19 +58,6 @@ div.expando.closed p::before {
 
 div.expando.open p::before {
     content: "[-] ";
-}
-
-div.expando-target {
-    border-top: 1px solid #000;
-    display: none;
-}
-
-div.expando {
-    background-color: #f5f5f5;
-}
-
-div.expando p {
-    padding: 16px;
 }
 
 p {
@@ -69,11 +82,11 @@ table.drop-table {
 
 table.drop-table td,
 table.drop-table th {
-    border-left: 1px solid #999;
+    border-left: 1px solid #666;
 }
 
 table.drop-table tr {
-    border-top: 1px solid #999;
+    border-top: 1px solid #666;
 }
 
 table.drop-table td:first-child,
@@ -110,21 +123,21 @@ td {
 }
 
 th {
-    background-color: #ccc;
+    background-color: #777;
 }
 
 tr:nth-child(even) {
-    background-color: #eee;
+    background-color: #555;
 }
 
 tr:nth-child(odd) {
-    background-color: #fff;
+    background-color: #444;
 }
 
 tr.vaulted:nth-child(even) {
-    background-color: #ffdddd;
+    background-color: #663333;
 }
 
 tr.vaulted:nth-child(odd) {
-    background-color: #ffeeee;
+    background-color: #662222;
 }
