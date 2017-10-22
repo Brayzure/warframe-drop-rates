@@ -22,6 +22,10 @@ div.listing {
     position: relative;
 }
 
+div.root-listing {
+    box-shadow: 5px 5px 3px #888;
+}
+
 div.expando.closed p::before {
     content: "[+] ";
 }
@@ -33,6 +37,10 @@ div.expando.open p::before {
 div.expando-target {
     border-top: 1px solid #000;
     display: none;
+}
+
+div.expando {
+    background-color: #f5f5f5;
 }
 
 div.expando p {
@@ -88,5 +96,13 @@ tr:nth-child(even) {
 }
 
 tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+tr.vaulted:nth-child(even) {
+    background-color: #eee;
+}
+
+tr.vaulted:nth-child(odd) {
     background-color: #fff;
 }

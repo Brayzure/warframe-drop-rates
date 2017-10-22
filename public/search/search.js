@@ -43,6 +43,7 @@
 
                     // Create div containing a single Item listing
                     var itemDiv = createExpando(drops.item_name);
+                    itemDiv.className = itemDiv.className + " root-listing";
 
                     var listing, table;
 
