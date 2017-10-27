@@ -45,7 +45,15 @@
                     var itemDiv = createExpando(drops.item_name);
                     itemDiv.className = itemDiv.className + " root-listing";
 
-                    var listing, table;
+                    var listing, div, table;
+
+                    if(drops.sortie && drops.sortie.chance > 0) {
+                        div = createItemSourceElement("sortie");
+                        div.children[0].innerHTML = "Sortie: " + toPercent(drops.sortie.chance, 2);
+                        div.className = "sortie-listing";
+
+                        itemDiv.children[1].appendChild(div);
+                    }
 
                     if(drops.enemies.length) {
                         listing = createItemSourceElement("Enemies");
@@ -130,7 +138,12 @@
     function createItemSourceElement(type) {
          // Single entry, handled differently
         if(type == "sortie") {
+            var div = document.createElement('div');
+            var p = document.createElement('p');
+            p.className = "sortie";
+            div.appendChild(p);
 
+            return div;
         }
         // Listing
         else {

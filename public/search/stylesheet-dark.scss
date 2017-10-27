@@ -1,0 +1,81 @@
+@import 'stylesheet.scss';
+
+html {
+    background-color: #222;
+    color: #ddd;
+}
+
+a {
+    color: #9bc1ff;
+    text-decoration: underline #9bc1ff;
+
+    &:visited {
+        color: #eb9bff;
+        text-decoration: underline #eb9bff;
+    }
+}
+
+div {
+    &.content {
+        text-align: center;
+
+        p {
+            margin: 12px;
+        }
+    }
+
+    &.listing {
+        border: 1px solid #000;
+        background-color: #444;
+    }
+
+    &.sortie-listing {
+        border: 1px solid #000;
+        background-color: #666;
+    }
+
+    &.root-listing {
+        box-shadow: 5px 5px 3px #000;
+    }
+
+    &.expando {
+        background-color: #666;
+    }
+}
+
+table {
+    &.drop-table {
+        td,
+        th {
+            border-left: 1px solid #666;
+        }
+
+        tr {
+            border-top: 1px solid #666;
+        }
+    }
+}
+
+th {
+    background-color: #777;
+}
+
+tr {
+    &:nth-child(even) {
+        background-color: #555;
+    }
+
+    &:nth-child(odd) {
+        background-color: #444;
+    }
+
+    &.vaulted {
+        &:nth-child(even) {
+            background-color: #663333;
+        }
+
+        &:nth-child(odd) {
+            background-color: #662222;
+        }
+    }
+}

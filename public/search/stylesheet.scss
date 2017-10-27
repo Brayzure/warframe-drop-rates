@@ -1,0 +1,146 @@
+html {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input {
+    height: 25px;
+    width: 50%;
+    font-size: 18px;
+}
+
+p {
+    margin: 0px;
+
+    &.sortie {
+        padding: 16px;
+    }
+
+    &.footer {
+        font-size: 12px;
+        font-style: italic;
+        text-align: center;
+    }
+}
+
+div {
+    &.content {
+        text-align: center;
+
+        p {
+            margin: 12px;
+        }
+    }
+
+    &.listing {
+        border: 1px solid #000;
+        margin: 12px;
+        position: relative;
+    }
+
+    &.sortie-listing {
+        border: 1px solid #000;
+        margin: 12px;
+        position: relative;
+        background-color: #f5f5f5;
+    }
+
+    &.root-listing {
+        box-shadow: 5px 5px 3px #888;
+    }
+
+    &.expando.closed p::before {
+        content: "[+] ";
+    }
+
+    &.expando.open p::before {
+        content: "[-] ";
+    }
+
+    &.expando-target {
+        border-top: 1px solid #000;
+        display: none;
+    }
+
+    &.expando {
+        p {
+            padding: 16px;
+        }
+
+        background-color: #f5f5f5;
+    }
+}
+
+table {
+    &.drop-table {
+        width: 100%;
+        border: none;
+        border-collapse: collapse;
+
+        td,
+        th {
+            border-left: 1px solid #999;
+        }
+
+        td:first-child,
+        th:first-child {
+            border-left: none;
+        }
+
+        tr {
+            border-top: 1px solid #999;
+        }
+
+        tr:first-child {
+            border-top: none;
+        }
+    }
+
+    &.relics {
+        th:first-child,
+        td:first-child {
+            text-align: center;
+            width: 10%;
+        }
+    }
+
+    &.enemies {
+        th:last-child,
+        td:last-child {
+            width: 36%;
+        }
+    }
+
+    th:last-child,
+    td:last-child {
+        width: 12%;
+    }
+}
+
+th {
+    padding: 8px;
+    background-color: #ccc;
+}
+
+td {
+    padding: 4px;
+}
+
+tr {
+    &:nth-child(even) {
+        background-color: #eee;
+    }
+
+    &:nth-child(odd) {
+        background-color: #fff;
+    }
+
+    &.vaulted {
+        &:nth-child(even) {
+            background-color: #ffdddd;
+        }
+
+        &:nth-child(odd) {
+            background-color: #ffeeee;
+        }
+    }
+}

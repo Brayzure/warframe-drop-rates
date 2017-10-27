@@ -1,7 +1,7 @@
 {
   "name": "warframe-drop-rates",
-  "version": "0.0.1",
-  "description": "Placeholder",
+  "version": "0.1.0",
+  "description": "RESTful API used to provide developer access to Warframe's drop tables.",
   "main": "index.js",
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
@@ -9,12 +9,15 @@
     "express": "^4.15.4",
     "http": "^0.0.0",
     "https": "^1.0.0",
+    "node-sass": "^4.5.3",
     "pg": "^7.3.0",
     "request": "^2.81.0"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "scrape": "node ./scripts/scrape.js",
+    "css": "node ./scripts/sass.js"
   },
   "repository": {
     "type": "git",

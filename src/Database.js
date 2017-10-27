@@ -113,7 +113,7 @@ const functions = {
     findItem: async function(item, exact=false) {
         try {
             if(item.length < 1) {
-                return {};
+                return [];
             }
 
             let result;
@@ -129,6 +129,9 @@ const functions = {
                 if(!data[name]) {
                     data[name] = {
                         item_name: name,
+                        sortie: {
+                            chance: 0
+                        },
                         enemies: [],
                         missions: [],
                         relics: []
@@ -182,11 +185,7 @@ const functions = {
                         data[name].missions.push(d);
                         break;
                     case "sortie":
-                        if(!data[name].sortie) {
-                            data[name].sortie = {
-                                chance: entry.chance
-                            }
-                        }
+                        data[name].sortie.chance = entry.chance;
                         break;
                     default:
                         throw new Error(`Unrecognized reward entry type: ${entry.type}`);
@@ -211,6 +210,9 @@ const functions = {
                 if(!data[relic.item_name]) {
                     data[relic.item_name] = {
                         item_name: relic.item_name,
+                        sortie: {
+                            chance: 0
+                        },
                         enemies: [],
                         missions: [],
                         relics: []
