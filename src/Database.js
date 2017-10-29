@@ -280,13 +280,12 @@ const functions = {
             tier = capitalize(tier);
             name = capitalize(name);
             let relicName = `${tier} ${name} Relic`;
-            console.log(relicName);
             result = await pg.query({
                 text: "SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = $3) AS v FROM relics WHERE tier = $1 AND name = $2",
                 values: [tier, name, relicName]
             });
             if(!result.rows.length) {
-                return false;
+                throw new Error("Relic doesn't exist.");
             }
             let data = {};
             data.vaulted = false;
@@ -345,8 +344,6 @@ const functions = {
                 }
                 data.sources.push(mission);
             }
-
-            console.log(sources.rows);
 
             return data;
         }

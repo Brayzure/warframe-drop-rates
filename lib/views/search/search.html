@@ -3,12 +3,16 @@
 <head>
     <title>wfdrops - Warframe Drop Table Search</title>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="stylesheet.css" id="theme">
+    <link rel="stylesheet" type="text/css" href="/public/search/stylesheet.css" id="theme">
     <meta charset="utf-8">
     <meta name="description" content="A third-party search tool for searching Warframe's official
     drop tables.">
 </head>
 <body>
+    <div>
+        <datalist id="inputBox"></datalist>
+    </div>
+    <script type="text/javascript" src="/public/search/datalist.js"></script>
     <div class="content">
         <h2>WFDrops - Warframe Drop Table Search Tool</h2>
         <p>WFDrops is a third-party tool used to provide easier access to Warframe's official
@@ -28,9 +32,9 @@
 
     <h3>Items</h3>
     <div id="root"></div>
-    <script type="text/javascript" src="/search/search.js"></script>
-    <script type="text/javascript" src="/search/slide.js"></script>
-    <script type="text/javascript" src="/search/themeToggle.js"></script>
+    <script type="text/javascript" src="/public/search/search.js"></script>
+    <script type="text/javascript" src="/public/search/slide.js"></script>
+    <script type="text/javascript" src="/public/search/themeToggle.js"></script>
 
     <p class="footer"><script>document.write("&copy; " + new Date().getFullYear());</script>, Tyler Ricketts (Brayzure)</p>
 </body>

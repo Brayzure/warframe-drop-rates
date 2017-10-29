@@ -1,4 +1,5 @@
 const http = require('http');
+const path = require('path');
 const Express = require('express');
 const Database = require('./src/Database.js');
 const RateLimiter = require('./src/RateLimiter.js');
@@ -10,6 +11,8 @@ let api = require('./routes/api.js');
 let web = require('./routes/web.js');
 
 app.set('trust proxy', true);
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "public/views"));
 
 app.use(Express.static("public"))
 
