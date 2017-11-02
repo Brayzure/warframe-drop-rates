@@ -368,6 +368,12 @@ const functions = {
             if(missionData) {
                 mission = missionData;
             }
+            if(missionDrops.rows[0].rotation) {
+                mission.reward_scheme = "rotation";
+            }
+            else {
+                mission.reward_scheme = "single";
+            }
             mission.drops = [];
             for(drop of missionDrops.rows) {
                 mission.node = drop.source;
