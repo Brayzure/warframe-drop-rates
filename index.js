@@ -10,9 +10,9 @@ const ratelimit = new RateLimiter(10, 10);
 let api = require('./routes/api.js');
 let web = require('./routes/web.js');
 
-app.set('trust proxy', true);
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "public/views"));
+app.set("trust proxy", true);
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "lib/views"));
 
 app.use(Express.static("public"))
 
