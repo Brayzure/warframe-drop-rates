@@ -8,6 +8,10 @@ input {
     font-size: 18px;
 }
 
+h1, h3 {
+    text-align: center;
+}
+
 p {
     margin: 0px;
 
@@ -23,6 +27,19 @@ p {
 }
 
 div {
+    &.container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    &.container-item {
+        flex-shrink: 0;
+        flex-basis: 300px;
+        margin: 22px;
+    }
+
     &.content {
         text-align: center;
 
@@ -71,28 +88,26 @@ div {
 }
 
 table {
-    &.drop-table {
-        width: 100%;
-        border: none;
-        border-collapse: collapse;
+    width: 100%;
+    border: none;
+    border-collapse: collapse;
 
-        td,
-        th {
-            border-left: 1px solid #999;
-        }
+    td,
+    th {
+        border-left: 1px solid #999;
+    }
 
-        td:first-child,
-        th:first-child {
-            border-left: none;
-        }
+    td:first-child,
+    th:first-child {
+        border-left: none;
+    }
 
-        tr {
-            border-top: 1px solid #999;
-        }
+    tr {
+        border-top: 1px solid #999;
+    }
 
-        tr:first-child {
-            border-top: none;
-        }
+    tr:first-child {
+        border-top: none;
     }
 
     &.relics {

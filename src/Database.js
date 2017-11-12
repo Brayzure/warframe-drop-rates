@@ -356,7 +356,7 @@ const functions = {
             source = capitalize(source);
             let missionData = await functions.findMission(source);
             let missionDrops = await pg.query({
-                text: "SELECT * FROM rewards WHERE source = $1",
+                text: "SELECT * FROM rewards WHERE source = $1 ORDER BY rotation, chance DESC, item_name ASC",
                 values: [source]
             });
 

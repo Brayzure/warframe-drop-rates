@@ -1,0 +1,28 @@
+mixin listing(titles, entries)
+    table
+        tr
+            each title in titles
+                th= title
+        each row in entries
+            tr
+                each entry in row
+                    td= entry
+
+if Array.isArray(drops)
+    .container
+        div
+            - var titles = ["Item", "Chance"];
+            - var entries = [];
+            each item in drops
+                - entries.push([item.item_name, (item.chance*100).toFixed(2).toString() + '%']);
+            +listing(titles, entries)
+else
+    .container
+        each val, index in drops
+            - var titles = ["Item", "Chance"];
+            - var entries = [];
+            each item in val
+                - entries.push([item.item_name, (item.chance*100).toFixed(2).toString() + '%']);
+            div.container-item
+                h3 Rotation #{index}
+                +listing(titles, entries)

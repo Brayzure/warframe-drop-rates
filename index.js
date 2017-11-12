@@ -11,11 +11,10 @@ let api = require('./routes/api.js');
 let web = require('./routes/web.js');
 
 app.set("trust proxy", true);
-app.set("view engine", "pug");
+app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "lib/views"));
 
 app.use(Express.static("public"))
-
 app.use(logRequests);
 app.use(allowCrossDomain);
 app.use('/api', checkRateLimit);
