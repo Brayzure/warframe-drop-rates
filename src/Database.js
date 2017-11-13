@@ -353,7 +353,11 @@ const functions = {
     },
     getMissionTable: async function(source) {
         try {
-            source = capitalize(source);
+            let sourceWords = source.split(" ");
+            for(i in sourceWords) {
+                sourceWords[i] = capitalize(sourceWords[i]);
+            }
+            source = sourceWords.join(" ");
             let missionData = await functions.findMission(source);
             let missionDrops = await pg.query({
                 text: "SELECT * FROM rewards WHERE source = $1 ORDER BY rotation, chance DESC, item_name ASC",

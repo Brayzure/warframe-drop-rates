@@ -18,7 +18,8 @@ router.get("/search", (req, res) => {
 
 router.get("/missions/:node", async (req, res) => {
     try {
-        let dropTable = await Database.getMissionTable(req.params.node);
+        let node = decodeURIComponent(req.params.node);
+        let dropTable = await Database.getMissionTable(node);
         if(!dropTable) {
             res.sendStatus(404);
         }
