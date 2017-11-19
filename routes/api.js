@@ -5,7 +5,7 @@
 const Express = require('express');
 const path = require('path');
 const router = Express.Router();
-const Database = require('../src/Database.js');
+const Interface = require('../src/Interface.js');
 
 router.get('/search', async (req, res) => {
     try {
@@ -15,7 +15,7 @@ router.get('/search', async (req, res) => {
         }
         else {
             let result = "";
-            result = await Database.findItem(req.query.term);
+            result = await Interface.findItem(req.query.term);
             //console.log(result);
             res.send(result);
         }
@@ -30,7 +30,7 @@ router.get('/search', async (req, res) => {
 router.get('/relics/:tier/:name', async (req, res) => {
     try {
         let result = {};
-        result = await Database.getRelic(req.params.tier, req.params.name);
+        result = await Interface.getRelic(req.params.tier, req.params.name);
         if(result) {
             res.send(result);
         }
@@ -52,7 +52,7 @@ router.get('/relics/:tier/:name', async (req, res) => {
 router.get('/missions/:node', async (req, res) => {
     try {
         let result = {};
-        result = await Database.getMissionTable(req.params.node);
+        result = await Interface.getMissionTable(req.params.node);
         if(result) {
             res.send(result);
         }

@@ -1,7 +1,7 @@
 const http = require('http');
 const path = require('path');
 const Express = require('express');
-const Database = require('./src/Database.js');
+const Database = require('./src/core/Database.js');
 const RateLimiter = require('./src/RateLimiter.js');
 
 const app = Express();

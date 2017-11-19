@@ -5,7 +5,7 @@
 const Express = require('express');
 const path = require('path');
 const router = Express.Router();
-const Database = require('../src/Database.js');
+const Interface = require('../src/Interface.js');
 const utils = require('../src/utils.js');
 const ejs = require('ejs');
 const pug = require('pug');
@@ -19,7 +19,7 @@ router.get("/search", (req, res) => {
 router.get("/missions/:node", async (req, res) => {
     try {
         let node = decodeURIComponent(req.params.node);
-        let dropTable = await Database.getMissionTable(node);
+        let dropTable = await Interface.getMissionTable(node);
         if(!dropTable) {
             res.sendStatus(404);
         }

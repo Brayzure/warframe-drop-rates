@@ -62,6 +62,9 @@ div {
     }
 
     &.root-listing {
+        max-width: 800px;
+        margin-right: auto;
+        margin-left: auto;
         box-shadow: 5px 5px 3px #888;
     }
 

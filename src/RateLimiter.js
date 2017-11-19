@@ -1,4 +1,4 @@
-const Bucket = require('./Bucket.js');
+const Bucket = require('./core/Bucket.js');
 
 class RateLimiter {
     /**
