@@ -11,6 +11,7 @@ const ejs = require('ejs');
 const pug = require('pug');
 
 const rootViewDir = path.join(__dirname, "..", "lib/views");
+const globalViewDir = path.join(rootViewDir, "globalViews");
 
 router.get("/search", (req, res) => {
     res.sendFile("search/search.html", {root: path.join(__dirname, "..", "public/views")});

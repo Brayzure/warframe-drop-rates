@@ -1,7 +1,7 @@
 const Database = require("./Database.js");
 
 const functions = {
-    getRelic: async function(tier, name) {
+    getRelic: async function(tier, name, verbose=false) {
         try {
             let relic = await functions.getRawRelic(tier, name);
             let newRelic = {
@@ -21,6 +21,13 @@ const functions = {
             newRelic.drops.uncommon.push(relic.Intact[3]);
             newRelic.drops.uncommon.push(relic.Intact[4]);
             newRelic.drops.rare.push(relic.Intact[5]);
+
+            if(verbose) {
+                newRelic.intact = relic.Intact;
+                newRelic.exceptional = relic.Exceptional;
+                newRelic.flawless = relic.Flawless;
+                newRelic.radiant = relic.Radiant;
+            }
 
             /*
             let sources = await Database.findItem(relic.relic_name, true);
@@ -61,10 +68,7 @@ const functions = {
                 data[item.rating].push(r);
             }
 
-            data.Intact.sort((a, b) => { return b.chance - a.chance });
-            data.Exceptional.sort((a, b) => { return b.chance - a.chance });
-            data.Flawless.sort((a, b) => { return b.chance - a.chance });
-            data.Radiant.sort((a, b) => { return b.chance - a.chance });
+            data = sortRelicDrops(data);
 
             return data;
         }
@@ -73,5 +77,26 @@ const functions = {
         }
     }
 }
+
+function sortRelicDrops(relic) {
+    for(i=1; i<relic.Intact.length; i++) {
+        let pos = i;
+        for(j=i-1; j>=0 && relic.Intact[pos].chance > relic.Intact[j].chance; j--) {
+            relic.Intact.swap(pos, j);
+            relic.Exceptional.swap(pos, j);
+            relic.Flawless.swap(pos, j);
+            relic.Radiant.swap(pos, j);
+            pos--;
+        }
+    }
+
+    return relic;
+}
+
+Array.prototype.swap = function(i, j) {
+    let temp = this[i];
+    this[i] = this[j];
+    this[j] = temp;
+};
 
 module.exports = functions;

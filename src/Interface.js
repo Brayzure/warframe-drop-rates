@@ -5,9 +5,9 @@ const Enemy = require("./core/Enemy.js");
 const Database = require("./core/Database.js");
 
 const functions = {
-    getRelic: async function(tier, name) {
+    getRelic: async function(tier, name, verbose=false) {
         try {
-            let relic = await Relic.getRelic(tier, name);
+            let relic = await Relic.getRelic(tier, name, verbose);
             let missions = await Database.findItem(`${tier} ${name} Relic`, true);
             relic.sources = missions.rewards;
             console.log(relic);
