@@ -51,7 +51,7 @@ const functions = {
             }
 
             let data = {};
-            data.relic_name = `${tier} ${name} Relic`;
+            data.relic_name = capitalize(`${tier} ${name} Relic`);
             data.vaulted = false;
 
             for(item of rows) {
@@ -98,5 +98,14 @@ Array.prototype.swap = function(i, j) {
     this[i] = this[j];
     this[j] = temp;
 };
+
+function capitalize(phrase) {
+    let words = [];
+    for(word of phrase.split(" ")) {
+        let newWord = word.charAt(0).toUpperCase() + word.slice(1);
+        words.push(newWord);
+    }
+    return words.join(" ");
+}
 
 module.exports = functions;

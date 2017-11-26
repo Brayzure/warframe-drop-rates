@@ -1,0 +1,51 @@
+.tab-container {
+    border: 1px solid #000;
+}
+
+.tab-header {
+    overflow: auto;
+    width: 100%;
+}
+
+.tab-tab {
+    box-sizing: border-box;
+    width: 25%;
+    float: left;
+    background-color: #eee;
+    border-bottom: 1px solid #000;
+    border-right: 1px solid #000;
+}
+
+.tab-tab.active ~ .tab-tab {
+    border-bottom: 1px solid #000;
+    border-right: none;
+    border-left: 1px solid #000;
+}
+
+.tab-tab.active {
+    background-color: #fff;
+    border-right: none;
+    border-bottom: none;
+}
+
+.tab-tab p {
+    margin: 12px;
+    text-align: center;
+}
+
+.tab-content {
+    display: block;
+}
+
+.tab-item {
+    display: none;
+}
+
+.tab-item p {
+    margin: 0px;
+    padding: 24px;
+}
+
+.tab-item.active {
+    display: block;
+}

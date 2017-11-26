@@ -11,10 +11,59 @@ const ejs = require('ejs');
 const pug = require('pug');
 
 const rootViewDir = path.join(__dirname, "..", "lib/views");
-const globalViewDir = path.join(rootViewDir, "globalViews");
+const partialViewDir = path.join(__dirname, "..", "lib/partials");
 
 router.get("/search", (req, res) => {
     res.sendFile("search/search.html", {root: path.join(__dirname, "..", "public/views")});
+});
+
+router.get("/relics/:tier/:name", async (req, res) => {
+    try {
+        let tier = req.params.tier;
+        let name = req.params.name;
+        let relic = await Interface.getRelic(tier, name, true);
+        let intact = pug.renderFile(
+            path.join(rootViewDir, "relics/relicTable.pug"),
+            {
+                drops: relic.intact
+            }
+        )
+        let exceptional = pug.renderFile(
+            path.join(rootViewDir, "relics/relicTable.pug"),
+            {
+                drops: relic.exceptional
+            }
+        )
+        let flawless = pug.renderFile(
+            path.join(rootViewDir, "relics/relicTable.pug"),
+            {
+                drops: relic.flawless
+            }
+        )
+        let radiant = pug.renderFile(
+            path.join(rootViewDir, "relics/relicTable.pug"),
+            {
+                drops: relic.radiant
+            }
+        )
+
+        res.render("relics/relics.ejs", {
+            relic: relic.relic_name,
+            intact,
+            exceptional,
+            flawless,
+            radiant
+        });
+    }
+    catch (err) {
+        console.log(err);
+        if(err.message === "Relic doesn't exist.") {
+            res.sendStatus(404);
+        }
+        else {
+            res.sendStatus(500);
+        }
+    }
 });
 
 router.get("/missions/:node", async (req, res) => {
@@ -32,7 +81,7 @@ router.get("/missions/:node", async (req, res) => {
             }
 
             let html = pug.renderFile(
-                path.join(rootViewDir, "missions/dropTable.pug"),
+                path.join(partialViewDir, "/dropTable.pug"),
                 {
                     drops: drops
                 }

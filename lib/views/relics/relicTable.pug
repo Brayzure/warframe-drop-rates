@@ -1,0 +1,16 @@
+mixin listing(titles, entries)
+    table
+        tr
+            each title in titles
+                th= title
+        each row in entries
+            tr
+                each entry in row
+                    td= entry
+
+div
+    - var titles = ["Item", "Chance"];
+    - var entries = [];
+    each item in drops
+        - entries.push([item.item_name, (Math.round(item.chance*100*100)/100).toString() + '%']);
+    +listing(titles, entries)

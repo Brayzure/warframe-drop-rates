@@ -27,6 +27,13 @@ p {
 }
 
 div {
+    &.center {
+        width: 80%;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
     &.container {
         display: flex;
         flex-wrap: wrap;
