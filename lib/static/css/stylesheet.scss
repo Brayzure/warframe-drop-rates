@@ -76,11 +76,13 @@ div {
     }
 
     &.expando.closed p::before {
-        content: "[+] ";
+        font-family: FontAwesome;
+        content: "\f196   ";
     }
 
     &.expando.open p::before {
-        content: "[-] ";
+        font-family: FontAwesome;
+        content: "\f147   ";
     }
 
     &.expando-target {
