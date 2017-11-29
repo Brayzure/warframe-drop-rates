@@ -13,6 +13,10 @@ const pug = require('pug');
 const rootViewDir = path.join(__dirname, "..", "lib/views");
 const partialViewDir = path.join(__dirname, "..", "lib/partials");
 
+router.get("/", (req, res) => {
+    res.redirect("./search");
+});
+
 router.get("/search", (req, res) => {
     res.sendFile("search/search.html", {root: path.join(__dirname, "..", "public/views")});
 });
