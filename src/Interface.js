@@ -10,8 +10,21 @@ const functions = {
             let relic = await Relic.getRelic(tier, name, verbose);
             let missions = await Database.findItem(`${tier} ${name} Relic`, true);
             relic.sources = missions.rewards;
-            console.log(relic);
             return relic;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    getAllRelics: async function(tier, name, verbose=false) {
+        try {
+            let relics = await Relic.getAllRelics(verbose);
+            for(i in relics) {
+                if(!relics[i].relic_name) console.log(i, relics[i]);
+                let missions = await Database.findItem(relics[i].relic_name, true);
+                relics[i].sources = missions.rewards;
+            }
+            return relics;
         }
         catch (err) {
             throw err;

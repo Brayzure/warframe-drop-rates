@@ -222,6 +222,30 @@ const functions = {
             throw err;
         }
     },
+    getAllRelics: async function() {
+        try {
+            let result;
+
+            result = await pg.query({
+                text: `
+                    WITH available AS (
+                        SELECT DISTINCT item_name
+                        FROM rewards
+                        WHERE item_name ILIKE '% relic'
+                    )
+                    SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * 
+                        FROM available
+                        WHERE relics.tier || ' ' || relics.name || ' Relic' LIKE available.item_name
+                        ) AS v FROM relics;`,
+                values: []
+            });
+
+            return result.rows;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
     getMissionTable: async function(source) {
         try {
             let missionDrops = await pg.query({

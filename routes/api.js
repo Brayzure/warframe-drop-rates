@@ -52,6 +52,28 @@ router.get('/relics/:tier/:name', async (req, res) => {
     }
 });
 
+router.get('/relics', async (req, res) => {
+    try {
+        let result = {};
+        let verbose = true;
+        result = await Interface.getAllRelics(verbose);
+        if(result) {
+            res.send(result);
+        }
+        else {
+            res.status(500).send({
+                status: 500,
+                message: "Unable to retrieve relics",
+                description: "An internal error was encountered when attempting to retrieve all relics."
+            });
+        }
+    }
+    catch (e) {
+        res.sendStatus(500);
+        console.log(e);
+    }
+});
+
 router.get('/missions/:node', async (req, res) => {
     try {
         let result = {};

@@ -75,13 +75,24 @@ const functions = {
         catch (err) {
             throw err;
         }
+    },
+    getAllRelics: async function(verbose=false) {
+        try {
+            let rows = await Database.getAllRelics();
+            let relics = processRelics(rows, verbose);
+
+            return relics;
+        }
+        catch(err) {
+            throw err;
+        }
     }
 }
 
 function sortRelicDrops(relic) {
-    for(i=1; i<relic.Intact.length; i++) {
+    for(let i=1; i<relic.Intact.length; i++) {
         let pos = i;
-        for(j=i-1; j>=0 && relic.Intact[pos].chance > relic.Intact[j].chance; j--) {
+        for(let j=i-1; j>=0 && relic.Intact[pos].chance > relic.Intact[j].chance; j--) {
             relic.Intact.swap(pos, j);
             relic.Exceptional.swap(pos, j);
             relic.Flawless.swap(pos, j);
@@ -93,11 +104,79 @@ function sortRelicDrops(relic) {
     return relic;
 }
 
-Array.prototype.swap = function(i, j) {
-    let temp = this[i];
-    this[i] = this[j];
-    this[j] = temp;
-};
+function processRelics(rows, verbose) {
+    let data = {};
+
+    for(let item of rows) {
+        let relicName = `${item.tier} ${item.name} Relic`;
+
+        if(!data[relicName]) {
+            data[relicName] = {};
+            data[relicName].relic_name = relicName;
+            data[relicName].vaulted = false;
+        }
+
+        if(!data[relicName][item.rating]) {
+            data[relicName][item.rating] = [];
+        }
+        if(item.v) {
+            data[relicName].vaulted = true;
+        }
+        let r = {
+            item_name: item.item_name,
+            chance: item.chance
+        }
+        data[relicName][item.rating].push(r);
+    }
+
+    let ret = [];
+
+    for(let relic in data) {
+        if(data.hasOwnProperty(relic)) {
+            let r = sortRelicDrops(data[relic]);
+
+            let newRelic = {
+                relic_name: r.relic_name,
+                vaulted: r.vaulted
+            }
+            newRelic.drops = {
+                common: [],
+                uncommon: [],
+                rare: []
+            }
+
+            // Seems a bit messy
+            newRelic.drops.common.push(r.Intact[0]);
+            newRelic.drops.common.push(r.Intact[1]);
+            newRelic.drops.common.push(r.Intact[2]);
+            newRelic.drops.uncommon.push(r.Intact[3]);
+            newRelic.drops.uncommon.push(r.Intact[4]);
+            newRelic.drops.rare.push(r.Intact[5]);
+
+            if(verbose) {
+                newRelic.intact = r.Intact;
+                newRelic.exceptional = r.Exceptional;
+                newRelic.flawless = r.Flawless;
+                newRelic.radiant = r.Radiant;
+            }
+
+            ret.push(newRelic);
+        }
+    }
+
+    return ret;
+}
+
+Object.defineProperty(Array.prototype, "swap", {
+    enumerable: false,
+    value: function(i, j) {
+        let temp = this[i];
+        this[i] = this[j];
+        this[j] = temp;
+
+        return this;
+    }
+});
 
 function capitalize(phrase) {
     let words = [];

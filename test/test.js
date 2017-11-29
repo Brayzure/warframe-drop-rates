@@ -74,6 +74,11 @@ describe("Database interface", function() {
         it("should not find invalid relic", async function() {
             assert.isRejected(Relic.getRelic("Foo", "A1"));
         });
+
+        it("should obtain very many relics (more than 50)", async function() {
+            let relics = await Relic.getAllRelics();
+            assert.isAbove(relics.length, 50);
+        });
     });
 
     describe("Missions", function() {
