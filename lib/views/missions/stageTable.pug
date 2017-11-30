@@ -1,0 +1,28 @@
+mixin listing(titles, entries)
+    table
+        tr
+            each title in titles
+                th= title
+        each row in entries
+            tr
+                each entry in row
+                    td= entry
+
+div.container
+    each stages, rotation in drops
+        div.container-item
+            h3 Rotation #{rotation}
+            div.tab-container
+                div.tab-header
+                    each dropList, stage in stages
+                        div.tab-tab
+                            p Stage #{stage}
+                div.tab-content
+                    each dropList, stage in stages
+                        div.tab-item
+                            div
+                                - var titles = ["Item", "Chance"];
+                                - var entries = [];
+                                each item in dropList
+                                    - entries.push([item.item_name, (Math.round(item.chance*100*100)/100).toString() + '%']);
+                                +listing(titles, entries)

@@ -21,7 +21,10 @@ const functions = {
 
             let mission = missionData ? missionData : {};
 
-            if(rows[0].rotation) {
+            if(rows[0].stage) {
+                mission.reward_scheme = "stage";
+            }
+            else if(rows[0].rotation) {
                 mission.reward_scheme = "rotation";
             }
             else {

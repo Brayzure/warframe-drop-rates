@@ -79,20 +79,41 @@ router.get("/missions/:node", async (req, res) => {
         }
         else {
             let drops = dropTable.drops;
+            let html;
 
             if(dropTable.reward_scheme === "rotation") {
                 drops = utils.splitByRotation(dropTable.drops);
+                html = pug.renderFile(
+                    path.join(partialViewDir, "/dropTable.pug"),
+                    {
+                        drops: drops
+                    }
+                )
+            }
+            else if(dropTable.reward_scheme === "stage") {
+                drops = utils.splitByStage(dropTable.drops);
+                html = pug.renderFile(
+                    path.join(rootViewDir, "missions/stageTable.pug"),
+                    {
+                        drops: drops
+                    }
+                )
+            }
+            else {
+                html = pug.renderFile(
+                    path.join(partialViewDir, "/dropTable.pug"),
+                    {
+                        drops: drops
+                    }
+                )
             }
 
-            let html = pug.renderFile(
-                path.join(partialViewDir, "/dropTable.pug"),
-                {
-                    drops: drops
-                }
-            )
+            let mission = dropTable;
+            delete mission.drops;
+
             res.render("missions/missions.ejs", {
                 pug: html,
-                mission: dropTable.node
+                mission: mission
             });
         }
         
