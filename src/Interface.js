@@ -86,6 +86,7 @@ const functions = {
                         break;
                     case "single":
                     case "rotation":
+                    case "stage":
                         let mission = await Mission.getMission(entry.source);
                         let d;
                         if(mission) {
@@ -107,8 +108,11 @@ const functions = {
                             }
                         }
                         
-                        if(entry.type == "rotation") {
+                        if(entry.type == "rotation" || entry.type == "stage") {
                             d.rotation = entry.rotation;
+                        }
+                        if(entry.type == "stage") {
+                            d.stage = entry.stage;
                         }
                         data[name].missions.push(d);
                         break;
