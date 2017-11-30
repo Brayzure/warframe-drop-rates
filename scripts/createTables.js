@@ -42,6 +42,7 @@ const rewards = `CREATE TABLE rewards (
 source text,
 type text,
 rotation text,
+stage text,
 chance real,
 item_name text
 );`

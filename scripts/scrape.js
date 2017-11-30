@@ -1,7 +1,7 @@
 const request = require('request');
 const cheerio = require('cheerio');
 
-const Database = require('../src/Database.js');
+const Database = require('../src/core/Database.js');
 
 parseAll();
 
@@ -122,6 +122,12 @@ async function parseAll() {
 
 		for(mission in noSetLocationDrops) {
 			if(noSetLocationDrops.hasOwnProperty(mission)) {
+				await Database.addMission({
+					node: mission,
+					sector: "",
+					mission_type: "",
+					event: false
+				});
 				for(drop of noSetLocationDrops[mission].drops) {
 					let reward = {
 						source: mission,
@@ -178,7 +184,8 @@ async function parseAll() {
 					let reward = {
 						source: bounty,
 						reward_type: cetusDrops[bounty].dropType,
-						rotation: cetusDrops[bounty].dropType === "rotation" ? drop.rotation : "",
+						rotation: cetusDrops[bounty].dropType === "stage" ? drop.rotation : "",
+						stage: cetusDrops[bounty].dropType === "stage" ? drop.stage : "",
 						chance: drop.chance,
 						item: drop.item
 					}
@@ -255,6 +262,7 @@ async function parseAll() {
 			await Database.addRelic(relic);
 		}
 		console.log(`Pushed ${count} relic drops to the relics table!`);
+
 		process.exit();
 	});
 }
@@ -264,7 +272,6 @@ function parseMissions(table) {
 	let current = [];
 	for(tag of table) {
 		if(tag.children[0].attribs.class && tag.children[0].attribs.class.includes('blank-row')) {
-			//console.log(tag.children[0]);
 			tables.push(current);
 			current = [];
 		}
@@ -277,7 +284,6 @@ function parseMissions(table) {
 			current.push(data);
 		}
 	}
-	//console.log(tables);
 	let data = {};
 	for(t of tables) {
 		let sector, node, type;
@@ -344,7 +350,6 @@ function parseRelics(table) {
 	let current = [];
 	for(tag of table) {
 		if(tag.children[0].attribs.class && tag.children[0].attribs.class.includes('blank-row')) {
-			//console.log(tag.children[0]);
 			tables.push(current);
 			current = [];
 		}
@@ -462,7 +467,6 @@ function parseNoSetLocation(table) {
 					}
 					data.push(d.children[0].data);
 				}
-				//console.log(d);
 				
 			}
 			current.push(data);
@@ -572,7 +576,6 @@ function parseCetusBounties(table) {
 	let current = [];
 	for(tag of table) {
 		if(tag.children[0].attribs.class && tag.children[0].attribs.class.includes('blank-row')) {
-			//console.log(tag.children[0]);
 			tables.push(current);
 			current = [];
 		}
@@ -580,12 +583,11 @@ function parseCetusBounties(table) {
 			let data = [];
 			let t = tag.children;
 			for(d of t) {
-				data.push(d.children[0].data);
+				if(d.children[0]) data.push(d.children[0].data);
 			}
 			current.push(data);
 		}
 	}
-	//console.log(tables);
 	let data = {};
 	for(t of tables) {
 		let sector, node, type;
@@ -608,26 +610,34 @@ function parseCetusBounties(table) {
 		data[node] = {
 			sector: sector,
 			mission_type: type,
-			dropType: "",
+			dropType: "stage",
 			drops: []
 		}
 
 		t.splice(0, 1);
-		let rotation;
+		let rotation, stage;
 		
 		for(row of t) {
 			if(row[0].startsWith("Rotation ")) {
-				data[node].dropType = "rotation";
 				rotation = row[0].slice(9);
 			}
-			else if(data[node].dropType == "rotation") {
-				let drop = {
-					rotation: rotation,
-					item: row[0],
-					chance: parseChance(row[1])
+			else if(data[node].dropType == "stage") {
+				if(row[0].startsWith("Stage")) {
+					stages = parseStage(row[0], node);
 				}
+				else {
+					let drop;
+					for(stage of stages) {
+						drop = {
+							rotation: rotation,
+							stage: stage,
+							item: row[0],
+							chance: parseChance(row[1])
+						}
 
-				data[node].drops.push(drop);
+						data[node].drops.push(drop);
+					}
+				}
 			}
 			else {
 				data[node].dropType = "single";
@@ -867,4 +877,32 @@ function parseChance(str) {
 	}
 	
 	return parseFloat(chance);
+}
+
+function parseStage(stage, bounty) {
+	let stageCount = {
+		"Level 5 - 15 Bounty": 3,
+		"Level 10 - 30 Bounty": 3,
+		"Level 20 - 40 Bounty": 4,
+		"Level 30 - 50 Bounty": 5,
+		"Level 40 - 60 Bounty": 5
+	}
+	let stages = [];
+	switch (stage) {
+		case "Stage 1":
+			return ["1"];
+			break;
+		case "Stage 2, Stage 3 of 4, and Stage 3 of 5":
+			stages = ["2"];
+			if(stageCount[bounty] > 3) stages.push("3");
+			return stages;
+			break;
+		case "Stage 4 of 5 and Final Stage":
+			if(stageCount[bounty] > 4) stages.push("4");
+			stages.push(stageCount[bounty].toString());
+			return stages;
+		default:
+			throw new Error("Unknown stage: ", stage);
+			break;
+	}
 }

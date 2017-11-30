@@ -26,8 +26,8 @@ const functions = {
     addReward: async function(reward) {
         try {
             let result = await pg.query({
-                text: "INSERT INTO rewards VALUES($1, $2, $3, $4, $5) RETURNING *",
-                values: [reward.source, reward.reward_type, reward.rotation, reward.chance, reward.item]
+                text: "INSERT INTO rewards VALUES($1, $2, $3, $4, $5, $6) RETURNING *",
+                values: [reward.source, reward.reward_type, reward.rotation, reward.stage?reward.stage:"", reward.chance, reward.item]
             });
 
             return result;
