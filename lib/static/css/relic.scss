@@ -3,14 +3,14 @@
 }
 
 .tab-header {
-    overflow: auto;
+    display: flex;
     width: 100%;
 }
 
 .tab-tab {
     box-sizing: border-box;
-    width: 25%;
-    float: left;
+    flex-grow: 1;
+    flex-basis: 0;
     background-color: #eee;
     border-bottom: 1px solid #000;
     border-right: 1px solid #000;
