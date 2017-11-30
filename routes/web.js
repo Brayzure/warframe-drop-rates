@@ -51,12 +51,20 @@ router.get("/relics/:tier/:name", async (req, res) => {
             }
         )
 
+        let missionList = pug.renderFile(
+            path.join(rootViewDir, "relics/missionTable.pug"),
+            {
+                sources: relic.sources
+            }
+        )
+
         res.render("relics/relics.ejs", {
             relic: relic.relic_name,
             intact,
             exceptional,
             flawless,
-            radiant
+            radiant,
+            missionList
         });
     }
     catch (err) {

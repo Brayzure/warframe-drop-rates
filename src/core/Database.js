@@ -157,19 +157,24 @@ const functions = {
 
             let result, relicResult;
             result = await pg.query({
-                text: `SELECT * FROM rewards WHERE item_name ILIKE ${exact?"$1":"'%' || $1 || '%'"} ORDER BY item_name, chance DESC`,
+                text: `SELECT source, type, rotation, stage, chance, item_name, missions.sector, missions.mission_type, missions.event
+                FROM rewards
+                LEFT OUTER JOIN missions
+                ON (rewards.source = missions.node)
+                WHERE item_name ILIKE ${exact?"$1":"'%' || $1 || '%'"}
+                ORDER BY item_name, chance DESC`,
                 values: [item]
             });
 
             if(exact) {
                 relicResult = await pg.query({
-                    text: "SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item_name ILIKE $1 ORDER BY vaulted, item_name, tier, name, chance DESC",
+                    text: "SELECT tier, name, (tier || ' ' || name || ' Relic') AS relic_name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item_name ILIKE $1 ORDER BY vaulted, item_name, tier, name, chance DESC",
                     values: [item]
                 });
             }
             else {
                 relicResult = await pg.query({
-                    text: "SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item_name ILIKE '%' || $1 || '%' ORDER BY vaulted, item_name, tier, name, chance DESC",
+                    text: "SELECT tier, name, (tier || ' ' || name || ' Relic') AS relic_name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name = relics.tier || ' ' || relics.name || ' Relic') AS vaulted FROM relics WHERE item_name ILIKE '%' || $1 || '%' ORDER BY vaulted, item_name, tier, name, chance DESC",
                     values: [item]
                 });
             }

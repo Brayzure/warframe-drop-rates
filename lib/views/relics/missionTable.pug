@@ -1,0 +1,23 @@
+mixin listing(titles, entries)
+    table
+        tr
+            each title in titles
+                th= title
+        each row in entries
+            tr
+                each entry in row
+                    td= entry
+
+div.center.border
+    - var titles = ["Item", "Chance"];
+    - var entries = [];
+    each source in sources
+        - var sourceName = source.source;
+        if source.stage
+            - sourceName += " (Rotation " + source.rotation + " - Stage " + source.stage + ")";
+        else if source.rotation
+            - sourceName += " (Rotation " + source.rotation + ")";
+        if source.sector
+            - sourceName = source.sector + " / " + sourceName;
+        - entries.push([sourceName, (source.chance*100).toFixed(2).toString() + '%']);
+    +listing(titles, entries)

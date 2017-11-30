@@ -32,7 +32,7 @@ const functions = {
     },
     getMission: async function(node) {
         try {
-            return await Mission.getMission(node);
+            let mission = await Mission.getMission(node);
         }
         catch (err) {
             throw err;
@@ -87,14 +87,19 @@ const functions = {
                     case "single":
                     case "rotation":
                     case "stage":
-                        let mission = await Mission.getMission(entry.source);
+                        let mission;
+                        try {
+                            mission = await Mission.getMission(entry.source);
+                        }
+                        catch(err) {
+                            mission = null;
+                        }
                         let d;
                         if(mission) {
                             d = {
                                 node: mission.node,
                                 sector: mission.sector,
                                 mission_type: mission.mission_type,
-                                rotation: !!(entry.type == "rotation"),
                                 event_exclusive: mission.event,
                                 item_name: name,
                                 chance: entry.chance
