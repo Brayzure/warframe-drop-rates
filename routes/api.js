@@ -95,6 +95,27 @@ router.get('/missions/:node', async (req, res) => {
     }
 });
 
+router.get('/enemies/:name', async (req, res) => {
+    try {
+        let result = {};
+        result = await Interface.getEnemy(req.params.name);
+        if(result) {
+            res.send(result);
+        }
+        else {
+            res.status(404).send({
+                status: 404,
+                message: "Enemy not found",
+                description: "You attempted to access an enemy that either doesn't exist, or has no rewards."
+            });
+        }
+    }
+    catch (e) {
+        res.sendStatus(500);
+        console.log(e);
+    }
+});
+
 router.get('*', (req, res) => {
     res.sendStatus(404);
 });

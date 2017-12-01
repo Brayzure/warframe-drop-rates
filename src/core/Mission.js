@@ -17,7 +17,13 @@ const functions = {
     getMissionTable: async function(node) {
         try {
             let rows = await Database.getMissionTable(node);
-            let missionData = await functions.getMission(node);
+            let missionData;
+            try {
+                missionData = await functions.getMission(node);
+            }
+            catch(err) {
+                missionData = {};
+            }
 
             let mission = missionData ? missionData : {};
 

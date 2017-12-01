@@ -111,9 +111,12 @@ function processRelics(rows, verbose) {
         let relicName = `${item.tier} ${item.name} Relic`;
 
         if(!data[relicName]) {
-            data[relicName] = {};
-            data[relicName].relic_name = relicName;
-            data[relicName].vaulted = false;
+            data[relicName] = {
+                relic_name: relicName,
+                tier: item.tier,
+                name: item.name,
+                vaulted: false
+            };
         }
 
         if(!data[relicName][item.rating]) {
@@ -137,6 +140,8 @@ function processRelics(rows, verbose) {
 
             let newRelic = {
                 relic_name: r.relic_name,
+                tier: r.tier,
+                name: r.name,
                 vaulted: r.vaulted
             }
             newRelic.drops = {

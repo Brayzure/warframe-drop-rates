@@ -104,6 +104,8 @@ describe("Database interface", function() {
         it("should retrieve valid enemy", async function () {
             let enemy = await Enemy.getEnemy("Hunter Prime");
             assert.exists(enemy);
+            assert.equal(enemy.blueprints.length, 1, "correct number of blueprint drops retrieved");
+            assert.equal(enemy.mods.length, 0, "correct number of mod drops retrieved");
         });
 
         it("should not retrieve invalid enemy", async function() {

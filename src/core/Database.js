@@ -97,7 +97,7 @@ const functions = {
     addMission: async function(mission) {
         try {
             let result = await pg.query({
-                text: "INSERT INTO missions VALUES($1, $2, $3, $4) RETURNING *",
+                text: "INSERT INTO missions VALUES($1, $2, $3, $4) ON CONFLICT (node) DO NOTHING RETURNING *",
                 values: [mission.node, mission.sector, mission.mission_type, mission.event]
             });
 
@@ -188,7 +188,11 @@ const functions = {
     getEnemy: async function(enemy) {
         try {
             let result = await pg.query({
-                text: "SELECT * FROM enemies WHERE name ILIKE $1",
+                text: `SELECT enemies.name, enemies.mod_drop_chance, enemies.blueprint_drop_chance, rewards.type, rewards.item_name, rewards.chance
+                    FROM enemies
+                    LEFT OUTER JOIN rewards
+                    ON (enemies.name = rewards.source)
+                    WHERE enemies.name ILIKE $1`,
                 values: [enemy]
             });
 
@@ -217,7 +221,9 @@ const functions = {
             let relicName = `${tier} ${name} Relic`;
 
             result = await pg.query({
-                text: "SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name ILIKE $3) AS v FROM relics WHERE tier ILIKE $1 AND name ILIKE $2",
+                text: `SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * FROM rewards WHERE item_name ILIKE $3) AS v
+                FROM relics
+                WHERE tier ILIKE $1 AND name ILIKE $2`,
                 values: [tier, name, relicName]
             });
 
@@ -241,7 +247,24 @@ const functions = {
                     SELECT tier, name, rating, item_name, chance, NOT EXISTS(SELECT * 
                         FROM available
                         WHERE relics.tier || ' ' || relics.name || ' Relic' LIKE available.item_name
-                        ) AS v FROM relics;`,
+                        ) AS v FROM relics`,
+                values: []
+            });
+
+            return result.rows;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    getAllRelicMissions: async function() {
+        try {
+            let result;
+
+            result = await pg.query({
+                text: `SELECT *
+                    FROM rewards
+                    WHERE item_name ILIKE '% Relic'`,
                 values: []
             });
 

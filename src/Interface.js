@@ -19,10 +19,28 @@ const functions = {
     getAllRelics: async function(tier, name, verbose=false) {
         try {
             let relics = await Relic.getAllRelics(verbose);
+            let relicMissions = await Database.getAllRelicMissions();
+            
+            let relicSources = {};
+
+            for(row of relicMissions) {
+                if(!relicSources[row.item_name]) {
+                    relicSources[row.item_name] = [];
+                }
+
+                relicSources[row.item_name].push(row);
+            }
+
             for(i in relics) {
-                if(!relics[i].relic_name) console.log(i, relics[i]);
-                let missions = await Database.findItem(relics[i].relic_name, true);
-                relics[i].sources = missions.rewards;
+                let relic = relics[i];
+                let relicName = `${relic.tier} ${relic.name} Relic`;
+                console.log(relic)
+                if(relicSources[relicName]) {
+                    relics[i].sources = relicSources[relicName];
+                }
+                else {
+                    relics[i].sources = [];
+                }
             }
             return relics;
         }
@@ -33,6 +51,7 @@ const functions = {
     getMission: async function(node) {
         try {
             let mission = await Mission.getMission(node);
+            return mission;
         }
         catch (err) {
             throw err;
@@ -41,6 +60,15 @@ const functions = {
     getMissionTable: async function(node) {
         try {
             return await Mission.getMissionTable(node);
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    getEnemy: async function(name) {
+        try {
+            let enemy = await Enemy.getEnemy(name);
+            return enemy;
         }
         catch (err) {
             throw err;

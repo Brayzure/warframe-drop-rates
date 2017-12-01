@@ -8,7 +8,23 @@ const functions = {
                 throw new Error("No enemy found");
             }
 
-            return rows[0];
+            let enemy = {
+                name: rows[0].name,
+                mod_drop_chance: rows[0].mod_drop_chance,
+                blueprint_drop_chance: rows[0].blueprint_drop_chance,
+                mods: [],
+                blueprints: []
+            }
+
+            for(reward of rows) {
+                let type = reward.type.slice(6) + "s";
+                enemy[type].push({
+                    item_name: reward.item_name,
+                    chance: reward.chance
+                });
+            }
+
+            return enemy;
         }
         catch (err) {
             throw err;

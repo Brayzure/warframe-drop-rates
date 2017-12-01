@@ -98,6 +98,13 @@ async function parseAll() {
 
 		for(mission in keyDrops) {
 			if(keyDrops.hasOwnProperty(mission)) {
+				await Database.addMission({
+					node: mission,
+					sector: "",
+					mission_type: "",
+					event: false
+				});
+
 				for(drop of keyDrops[mission].drops) {
 					let reward = {
 						source: mission,
