@@ -5,7 +5,7 @@ const functions = {
         try {
             let rows = await Database.getEnemy(name);
             if(!rows || !rows.length) {
-                throw new Error("No enemy found");
+                return {};
             }
 
             let enemy = {

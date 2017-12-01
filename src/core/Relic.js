@@ -4,39 +4,45 @@ const functions = {
     getRelic: async function(tier, name, verbose=false) {
         try {
             let relic = await functions.getRawRelic(tier, name);
-            let newRelic = {
-                relic_name: relic.relic_name,
-                vaulted: relic.vaulted
+            if(!relic.tier) {
+                return {};
             }
-            newRelic.drops = {
-                common: [],
-                uncommon: [],
-                rare: []
+            else {
+                let newRelic = {
+                    relic_name: relic.relic_name,
+                    vaulted: relic.vaulted
+                }
+                newRelic.drops = {
+                    common: [],
+                    uncommon: [],
+                    rare: []
+                }
+
+                // Seems a bit messy
+                newRelic.drops.common.push(relic.Intact[0]);
+                newRelic.drops.common.push(relic.Intact[1]);
+                newRelic.drops.common.push(relic.Intact[2]);
+                newRelic.drops.uncommon.push(relic.Intact[3]);
+                newRelic.drops.uncommon.push(relic.Intact[4]);
+                newRelic.drops.rare.push(relic.Intact[5]);
+
+                if(verbose) {
+                    newRelic.intact = relic.Intact;
+                    newRelic.exceptional = relic.Exceptional;
+                    newRelic.flawless = relic.Flawless;
+                    newRelic.radiant = relic.Radiant;
+                }
+
+                /*
+                let sources = await Database.findItem(relic.relic_name, true);
+
+                newRelic.sources = sources.rewards;
+                console.log(newRelic);
+                */
+
+                return newRelic;
             }
-
-            // Seems a bit messy
-            newRelic.drops.common.push(relic.Intact[0]);
-            newRelic.drops.common.push(relic.Intact[1]);
-            newRelic.drops.common.push(relic.Intact[2]);
-            newRelic.drops.uncommon.push(relic.Intact[3]);
-            newRelic.drops.uncommon.push(relic.Intact[4]);
-            newRelic.drops.rare.push(relic.Intact[5]);
-
-            if(verbose) {
-                newRelic.intact = relic.Intact;
-                newRelic.exceptional = relic.Exceptional;
-                newRelic.flawless = relic.Flawless;
-                newRelic.radiant = relic.Radiant;
-            }
-
-            /*
-            let sources = await Database.findItem(relic.relic_name, true);
-
-            newRelic.sources = sources.rewards;
-            console.log(newRelic);
-            */
-
-            return newRelic;
+            
         }
         catch (err) {
             throw err;
@@ -47,7 +53,7 @@ const functions = {
             let rows = await Database.getRelic(tier, name);
 
             if(!rows || !rows.length) {
-                throw new Error("No relic found");
+                return {};
             }
 
             let data = {};

@@ -9,13 +9,12 @@ mixin listing(titles, entries)
                     td= entry
 
 if Array.isArray(drops)
-    .container
-        div
-            - var titles = ["Item", "Chance"];
-            - var entries = [];
-            each item in drops
-                - entries.push([item.item_name, (item.chance*100).toFixed(2).toString() + '%']);
-            +listing(titles, entries)
+    div
+        - var titles = ["Item", "Chance"];
+        - var entries = [];
+        each item in drops
+            - entries.push([item.item_name, (item.chance*100).toFixed(2).toString() + '%']);
+        +listing(titles, entries)
 else
     .container
         each val, index in drops

@@ -5,7 +5,7 @@ const functions = {
         try {
             let rows = await Database.getMission(node);
             if(!rows || !rows.length) {
-                throw new Error("No mission found");
+                return {}
             }
 
             return rows[0];

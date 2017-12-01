@@ -34,7 +34,6 @@ const functions = {
             for(i in relics) {
                 let relic = relics[i];
                 let relicName = `${relic.tier} ${relic.name} Relic`;
-                console.log(relic)
                 if(relicSources[relicName]) {
                     relics[i].sources = relicSources[relicName];
                 }

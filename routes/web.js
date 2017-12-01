@@ -26,46 +26,51 @@ router.get("/relics/:tier/:name", async (req, res) => {
         let tier = req.params.tier;
         let name = req.params.name;
         let relic = await Interface.getRelic(tier, name, true);
-        let intact = pug.renderFile(
-            path.join(rootViewDir, "relics/relicTable.pug"),
-            {
-                drops: relic.intact
-            }
-        )
-        let exceptional = pug.renderFile(
-            path.join(rootViewDir, "relics/relicTable.pug"),
-            {
-                drops: relic.exceptional
-            }
-        )
-        let flawless = pug.renderFile(
-            path.join(rootViewDir, "relics/relicTable.pug"),
-            {
-                drops: relic.flawless
-            }
-        )
-        let radiant = pug.renderFile(
-            path.join(rootViewDir, "relics/relicTable.pug"),
-            {
-                drops: relic.radiant
-            }
-        )
+        if(!relic.tier) {
+            res.sendStatus(404);
+        }
+        else {
+            let intact = pug.renderFile(
+                path.join(rootViewDir, "relics/relicTable.pug"),
+                {
+                    drops: relic.intact
+                }
+            )
+            let exceptional = pug.renderFile(
+                path.join(rootViewDir, "relics/relicTable.pug"),
+                {
+                    drops: relic.exceptional
+                }
+            )
+            let flawless = pug.renderFile(
+                path.join(rootViewDir, "relics/relicTable.pug"),
+                {
+                    drops: relic.flawless
+                }
+            )
+            let radiant = pug.renderFile(
+                path.join(rootViewDir, "relics/relicTable.pug"),
+                {
+                    drops: relic.radiant
+                }
+            )
 
-        let missionList = pug.renderFile(
-            path.join(rootViewDir, "relics/missionTable.pug"),
-            {
-                sources: relic.sources
-            }
-        )
+            let missionList = pug.renderFile(
+                path.join(rootViewDir, "relics/missionTable.pug"),
+                {
+                    sources: relic.sources
+                }
+            )
 
-        res.render("relics/relics.ejs", {
-            relic: relic.relic_name,
-            intact,
-            exceptional,
-            flawless,
-            radiant,
-            missionList
-        });
+            res.render("relics/relics.ejs", {
+                relic: relic.relic_name,
+                intact,
+                exceptional,
+                flawless,
+                radiant,
+                missionList
+            });
+        }
     }
     catch (err) {
         console.log(err);
@@ -125,6 +130,41 @@ router.get("/missions/:node", async (req, res) => {
             });
         }
         
+    }
+    catch (err) {
+        console.log(err);
+        res.sendStatus(500);
+    }
+});
+
+router.get("/enemies/:name", async (req, res) => {
+    try {
+        let name = decodeURIComponent(req.params.name);
+        let enemy = await Interface.getEnemy(name);
+        if(!enemy.name) {
+            res.sendStatus(404);
+        }
+        else {
+            let mods = pug.renderFile(
+                path.join(partialViewDir, "/dropTable.pug"),
+                {
+                    drops: enemy.mods
+                }
+            )
+
+            let blueprints = pug.renderFile(
+                path.join(partialViewDir, "/dropTable.pug"),
+                {
+                    drops: enemy.blueprints
+                }
+            )
+
+            res.render("enemies/enemies.ejs", {
+                enemy: enemy,
+                mods,
+                blueprints
+            });
+        }
     }
     catch (err) {
         console.log(err);
