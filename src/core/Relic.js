@@ -9,6 +9,8 @@ const functions = {
             }
             else {
                 let newRelic = {
+                    tier: relic.tier,
+                    name: relic.name,
                     relic_name: relic.relic_name,
                     vaulted: relic.vaulted
                 }
@@ -57,6 +59,8 @@ const functions = {
             }
 
             let data = {};
+            data.tier = rows[0].tier;
+            data.name = rows[0].name;
             data.relic_name = capitalize(`${tier} ${name} Relic`);
             data.vaulted = false;
 
