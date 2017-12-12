@@ -18,7 +18,8 @@ router.get("/", (req, res) => {
 });
 
 router.get("/search", (req, res) => {
-    res.sendFile("search/search.html", {root: path.join(__dirname, "..", "public/views")});
+    res.render("search/search.ejs");
+    //res.sendFile("search/search.html", {root: path.join(__dirname, "..", "public/views")});
 });
 
 router.get("/relics/:tier/:name", async (req, res) => {
