@@ -64,7 +64,7 @@ router.get("/relics/:tier/:name", async (req, res) => {
             )
 
             res.render("relics/relics.ejs", {
-                relic: relic.relic_name,
+                relic,
                 intact,
                 exceptional,
                 flawless,
