@@ -29,6 +29,15 @@ const functions = {
         catch (err) {
             throw err;
         }
+    },
+    getAllEnemies: async function() {
+        try {
+            let rows = await Database.getAllEnemies();
+            return rows;
+        }
+        catch (err) {
+            throw err;
+        }
     }
 }
 

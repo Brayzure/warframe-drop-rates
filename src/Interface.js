@@ -16,7 +16,7 @@ const functions = {
             throw err;
         }
     },
-    getAllRelics: async function(tier, name, verbose=false) {
+    getAllRelics: async function(verbose=false) {
         try {
             let relics = await Relic.getAllRelics(verbose);
             let relicMissions = await Database.getAllRelicMissions();
@@ -56,6 +56,16 @@ const functions = {
             throw err;
         }
     },
+    getAllMissions: async function() {
+        try {
+            let missions = Mission.getAllMissions();
+
+            return missions;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
     getMissionTable: async function(node) {
         try {
             return await Mission.getMissionTable(node);
@@ -68,6 +78,16 @@ const functions = {
         try {
             let enemy = await Enemy.getEnemy(name);
             return enemy;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    getAllEnemies: async function() {
+        try {
+            let enemies = Enemy.getAllEnemies();
+
+            return enemies;
         }
         catch (err) {
             throw err;

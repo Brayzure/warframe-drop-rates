@@ -257,6 +257,36 @@ const functions = {
             throw err;
         }
     },
+    getAllMissions: async function() {
+        try {
+            let result;
+
+            result = await pg.query({
+                text: `SELECT * FROM missions`,
+                values: []
+            });
+
+            return result.rows;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
+    getAllEnemies: async function() {
+        try {
+            let result;
+
+            result = await pg.query({
+                text: `SELECT * FROM enemies`,
+                values: []
+            });
+
+            return result.rows;
+        }
+        catch (err) {
+            throw err;
+        }
+    },
     getAllRelicMissions: async function() {
         try {
             let result;

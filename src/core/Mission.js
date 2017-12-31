@@ -47,6 +47,15 @@ const functions = {
         catch (err) {
             throw err;
         }
+    },
+    getAllMissions: async function() {
+        try {
+            let rows = await Database.getAllMissions();
+            return rows;
+        }
+        catch (err) {
+            throw err;
+        }
     }
 }
 

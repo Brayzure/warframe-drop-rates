@@ -21,10 +21,32 @@ router.get('/search', async (req, res) => {
         }
     }
     catch (e) {
-        res.sendStatus(500);
+        send500(res);
         console.log(e);
     }
     
+});
+
+router.get('/relics', async (req, res) => {
+    try {
+        let result = {};
+        let verbose = true;
+        result = await Interface.getAllRelics(verbose);
+        if(result) {
+            res.send(result);
+        }
+        else {
+            res.status(500).send({
+                status: 500,
+                message: "No relics found. Wait, that can't be right...",
+                description: "An internal error was encountered when attempting to retrieve all relics."
+            });
+        }
+    }
+    catch (e) {
+        send500(res);
+        console.log(e);
+    }
 });
 
 router.get('/relics/:tier/:name', async (req, res) => {
@@ -47,29 +69,28 @@ router.get('/relics/:tier/:name', async (req, res) => {
         }
     }
     catch (e) {
-        res.sendStatus(500);
+        send500(res);
         console.log(e);
     }
 });
 
-router.get('/relics', async (req, res) => {
+router.get('/missions', async (req, res) => {
     try {
         let result = {};
-        let verbose = true;
-        result = await Interface.getAllRelics(verbose);
+        result = await Interface.getAllMissions();
         if(result) {
             res.send(result);
         }
         else {
             res.status(500).send({
                 status: 500,
-                message: "Unable to retrieve relics",
-                description: "An internal error was encountered when attempting to retrieve all relics."
+                message: "No missions found. Wait, that can't be right...",
+                description: "An internal error was encountered when attempting to retrieve all missions."
             });
         }
     }
     catch (e) {
-        res.sendStatus(500);
+        send500(res);
         console.log(e);
     }
 });
@@ -90,7 +111,28 @@ router.get('/missions/:node', async (req, res) => {
         }
     }
     catch (e) {
-        res.sendStatus(500);
+        send500(res);
+        console.log(e);
+    }
+});
+
+router.get('/enemies', async (req, res) => {
+    try {
+        let result = {};
+        result = await Interface.getAllEnemies();
+        if(result) {
+            res.send(result);
+        }
+        else {
+            res.status(500).send({
+                status: 500,
+                message: "No enemies found. Wait, that can't be right...",
+                description: "An internal error was encountered when attempting to retrieve all enemies."
+            });
+        }
+    }
+    catch (e) {
+        send500(res);
         console.log(e);
     }
 });
@@ -111,7 +153,7 @@ router.get('/enemies/:name', async (req, res) => {
         }
     }
     catch (e) {
-        res.sendStatus(500);
+        send500(res);
         console.log(e);
     }
 });
@@ -119,5 +161,13 @@ router.get('/enemies/:name', async (req, res) => {
 router.get('*', (req, res) => {
     res.sendStatus(404);
 });
+
+function send500(res) {
+    res.status(500).send({
+        status: 500,
+        message: "We broke something, but we're not sure what went wrong.",
+        description: "An unknown internal error was encountered. Please report this, with as much detail as possible."
+    });
+}
 
 module.exports = router;
